@@ -1,6 +1,6 @@
-#include <iostream>
 #include <stdexcept>
-using namespace std;
+using std::range_error;
+using std::invalid_argument;
 
 template <typename E>
 class List{
@@ -85,58 +85,3 @@ public:
     int size() { return capacity; }
 
 };
-
-int main() {
-    List<int> list(3);
-    cout << "inserting elements into array...\n";
-    list.insert(2);
-    list.insert(4);
-    list.insert(5);
-
-    cout << "printing...\n";
-    for (int i = 0; i < list.length(); i++) {
-        cout << list[i] << " ";
-    }
-
-    cout <<  endl << endl;
-
-    cout << "size: " << list.size() << endl;
-    cout << "length: " << list.length() << endl;
-
-    cout << endl;
-
-    cout << "inserting more elements into array...\n";
-    list.insert(9);
-    list.insert(8);
-
-    cout << "printing...\n";
-    for (int i = 0; i < list.length(); i++) {
-        cout << list[i] << " ";
-    }
-
-    cout <<  endl << endl;
-
-    cout << "size: " << list.size() << endl;
-    cout << "length: " << list.length() << endl;
-
-    cout << endl;
-
-    cout << "removing elements...\n";
-    list.remove();
-    list.remove(0);
-    list.remove(1);
-
-    cout << "printing...\n";
-    for (int i = 0; i < list.length(); i++) {
-        cout << list[i] << " ";
-    }
-
-    cout <<  endl << endl;
-
-    cout << "size: " << list.size() << endl;
-    cout << "length: " << list.length() << endl;
-
-    cout << endl;
-
-    return 0;
-}
