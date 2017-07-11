@@ -6,8 +6,9 @@ using std::invalid_argument;
 template <typename E>
 class List{
 private:
-    int end;
-    int capacity;
+    int end;  // Keeps track of the index where the end of the list is.
+    int capacity;  // Keeps track of how many allocated spaces there are
+                   // in the array.
     E *arr;
 
     void expand() {
@@ -36,11 +37,29 @@ public:
 
     ~List() { delete[] arr; }
 
+    bool is_empty() {
+        // Returns true if the list is empty. Returns false if
+        // the list is not empty.
+        return end == -1;
+    }
+
+    int length() {
+        // Returns the length of the list.
+        return end + 1;
+    }
+
+    int size() {
+        // Returns how many spaces have been allocated for the list.
+        return capacity;
+    }
+
     void insert(E value, int index) {
+        // Insert data into the list. If no index is specified
+        // then the data will be inserted at the end of the list.
         if (index > end + 1 || index < 0)
             throw out_of_range("index out of range");
         if (end+1 == capacity)
-            // Exand the array if it is full.
+            // Expand the array if it is full.
             expand();
         for (int i = end; i >= index; i--) {
             arr[i+1] = arr[i];
@@ -49,18 +68,16 @@ public:
         end++;
     }
 
-    bool is_empty() { return end == -1; }
-
-    int length() { return end + 1; }
-
-    int size() { return capacity; }
-
     void insert(E value) {
-        // If no index is passed, insert at the end.
+        // Insert a value at the end of the list, unless an index
+        // is specified; in that case data will be inserted at
+        // that index.
         insert(value, end+1);
     }
 
     void remove(int index) {
+        // Remove data from the list. If no index is specified
+        // then the data will be removed from the end of the list.
         if (index > end || index < 0)
             throw out_of_range("index out of range");
         for (int i = index; i < end; i++) {
@@ -70,17 +87,21 @@ public:
     }
 
     void remove() {
-        // If no index is passed, remove at the end.
+        // Remove data from the end of the list, unless an index
+        // is specified; in that case data will be removed at
+        // that index.
         remove(end);
     }
 
     E& retrieve(int index) {
+        // Retrieves data located at the specified index.
         if (index > end || index < 0)
             throw out_of_range("index out of range");
         return arr[index];
     }
 
     E& operator[](int index){
+        // Overloads [] for convention.
         return retrieve(index);
     }
 
