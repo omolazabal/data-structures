@@ -46,7 +46,6 @@ public:
         }
         arr[index] = value;
         end++;
-        
     }
 
     void insert(E value) {
