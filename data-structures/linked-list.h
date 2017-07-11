@@ -1,6 +1,8 @@
 #include <stdexcept>
 #include <iostream>
+
 using std::cout;
+using std::out_of_range;
 
 template <typename E>
 class Stack;
