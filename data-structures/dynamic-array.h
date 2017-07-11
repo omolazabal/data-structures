@@ -1,5 +1,5 @@
 #include <stdexcept>
-using std::range_error;
+using std::out_of_range;
 using std::invalid_argument;
 
 
@@ -38,7 +38,7 @@ public:
 
     void insert(E value, int index) {
         if (index > end + 1 || index < 0)
-            throw range_error("index out of range");
+            throw out_of_range("index out of range");
         if (end+1 == capacity)
             // Exand the array if it is full.
             expand();
@@ -62,7 +62,7 @@ public:
 
     void remove(int index) {
         if (index > end || index < 0)
-            throw range_error("index out of range");
+            throw out_of_range("index out of range");
         for (int i = index; i < end; i++) {
             arr[i] = arr[i+1];
         }
@@ -76,7 +76,7 @@ public:
 
     E& retrieve(int index) {
         if (index > end || index < 0)
-            throw range_error("index out of range");
+            throw out_of_range("index out of range");
         return arr[index];
     }
 
