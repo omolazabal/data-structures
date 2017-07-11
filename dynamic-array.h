@@ -49,6 +49,12 @@ public:
         end++;
     }
 
+    bool is_empty() { return end == -1; }
+
+    int length() { return end + 1; }
+
+    int size() { return capacity; }
+
     void insert(E value) {
         // If no index is passed, insert at the end.
         insert(value, end+1);
@@ -77,11 +83,5 @@ public:
     E& operator[](int index){
         return retrieve(index);
     }
-
-    bool is_empty() { return end == -1; }
-
-    int length() { return end + 1; }
-
-    int size() { return capacity; }
 
 };
