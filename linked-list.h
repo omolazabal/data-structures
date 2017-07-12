@@ -90,8 +90,9 @@ public:
 
         Node<E>* new_node = new Node<E>;
         Node<E>* current;
-        set_to_index(current, index);
+        set_to_index(current, index - 1);
 
+        new_node->data = elem;
         new_node->next = current->next;
         current->next = new_node;
         num_of_nodes++;
@@ -100,7 +101,7 @@ public:
     void remove(int index) {
         if (is_empty())
             throw length_error("stack is empty");
-        if (index < 0 || index > num_of_nodes)
+        if (index < 0 || index > num_of_nodes - 1)
             throw out_of_range("index out of range");
 
         if (index == 0) {
@@ -109,7 +110,7 @@ public:
         }
 
         Node<E>* current;
-        set_to_index(current, index);
+        set_to_index(current, index - 1);
         Node<E>* temp = current->next;
 
         current->next = temp->next;
@@ -134,8 +135,10 @@ public:
             throw length_error("stack is empty");
 
         Node<E>* current = head;
-        while (current != nullptr)
+        while (current != nullptr) {
             cout << current->data << " ";
+            current = current->next;
+        }
     }
 
     void reverse() {
@@ -143,14 +146,14 @@ public:
             throw length_error("stack is empty");
 
         Node<E>* current = head;
-        Node<E>* next = current->next;
+        Node<E>* next = current;
         Node<E>* prev = nullptr;
 
         while (current != nullptr) {
+            next = current->next;
             current->next = prev;
             prev = current;
             current = next;
-            next = next->next;
         }
 
         head = prev;
