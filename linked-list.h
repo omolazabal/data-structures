@@ -1,8 +1,11 @@
 #include <stdexcept>
 #include <iostream>
 
+
 using std::cout;
 using std::out_of_range;
+using std::length_error;
+
 
 template <typename E>
 class Stack;
