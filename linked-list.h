@@ -30,9 +30,9 @@ private:
         if (index < 0 || index > num_of_nodes)
             throw out_of_range("index out of range");
 
-        current = head;
+        ptr = head;
         for (; index > 0; index--)
-            current = current->next;
+            ptr = ptr->next;
     }
 
 public:
@@ -104,7 +104,7 @@ public:
             throw out_of_range("index out of range");
 
         if (index == 0) {
-            pop(elem);
+            pop();
             return;
         }
 
@@ -138,18 +138,6 @@ public:
             cout << current->data << " ";
     }
 
-    void print(int index) {
-        if (is_empty())
-            throw length_error("stack is empty");
-        if (index < 0 || index > num_of_nodes)
-            throw out_of_range("index out of range");
-
-        Node<E>* current;
-        set_to_index(current, index);
-
-        cout << current->data;
-    }
-
     void reverse() {
         if (is_empty())
             throw length_error("stack is empty");
@@ -168,7 +156,7 @@ public:
         head = prev;
     }
 
-    E& operator[](){
+    E& operator[](int index){
         return retrieve(index);
     }
 
