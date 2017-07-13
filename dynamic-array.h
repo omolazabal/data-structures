@@ -14,6 +14,7 @@ private:
     void expand() {
         // Create new array of double the size of the previous array to
         // avoid the cost of the operation.
+
         E *newArr = new E[capacity*2];
         for (int i = 0; i <= end; i++) {
             newArr[i] = arr[i];
@@ -40,22 +41,26 @@ public:
     bool is_empty() {
         // Returns true if the list is empty. Returns false if
         // the list is not empty.
+
         return end == -1;
     }
 
     int length() {
         // Returns the length of the list.
+
         return end + 1;
     }
 
     int size() {
         // Returns how many spaces have been allocated for the list.
+
         return capacity;
     }
 
     void insert(E value, int index) {
         // Insert data into the list. If no index is specified
         // then the data will be inserted at the end of the list.
+
         if (index > end + 1 || index < 0)
             throw out_of_range("index out of range");
         if (end+1 == capacity)
@@ -72,12 +77,14 @@ public:
         // Insert a value at the end of the list, unless an index
         // is specified; in that case data will be inserted at
         // that index.
+
         insert(value, end+1);
     }
 
     void remove(int index) {
         // Remove data from the list. If no index is specified
         // then the data will be removed from the end of the list.
+
         if (index > end || index < 0)
             throw out_of_range("index out of range");
         for (int i = index; i < end; i++) {
@@ -90,11 +97,13 @@ public:
         // Remove data from the end of the list, unless an index
         // is specified; in that case data will be removed at
         // that index.
+
         remove(end);
     }
 
     E& retrieve(int index) {
         // Retrieves data located at the specified index.
+
         if (index > end || index < 0)
             throw out_of_range("index out of range");
         return arr[index];
@@ -102,6 +111,7 @@ public:
 
     E& operator[](int index){
         // Overloads [] for convention.
+
         return retrieve(index);
     }
 
