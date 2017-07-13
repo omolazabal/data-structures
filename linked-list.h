@@ -8,7 +8,7 @@ using std::length_error;
 
 
 template <typename E>
-class Stack;
+class Stack;  // Let Node class know Stack exists.
 
 
 template <typename E>
@@ -23,11 +23,13 @@ private:
 template <typename E>
 class Stack {
 private:
-    Node<E>* head;
+    Node<E>* head;  // Pointer to front of the stack.
     int num_of_nodes;
 
     void set_to_index(Node<E>*& ptr, int index) {
-        if (index < 0 || index > num_of_nodes)
+        // Traverses the given pointer to the given index.
+
+        if (index < 0 || index > num_of_nodes - 1)
             throw out_of_range("index out of range");
 
         ptr = head;
@@ -47,14 +49,21 @@ public:
     }
 
     bool is_empty() {
+        // Returns true if there are nodes in the stack, else
+        // returns false.
+
         return num_of_nodes == 0;
     }
 
     int length() {
+        // Returns number of nodes in stack.
+
         return num_of_nodes;
     }
 
     void push(const E& elem) {
+        // Adds a new element to the top of the stack.
+
         Node<E>* new_node = new Node<E>;
         new_node->data = elem;
         new_node->next = head;
@@ -63,6 +72,8 @@ public:
     }
 
     void pop() {
+        // Removes the top element of the stack.
+
         if (is_empty())
             throw  length_error("stack is empty");
 
@@ -73,6 +84,8 @@ public:
     }
 
     E& top() {
+        // Returns the top element of the stack.
+
         if (is_empty())
             throw length_error("stack is empty");
 
@@ -80,6 +93,8 @@ public:
     }
 
     void insert(const E& elem, int index) {
+        // Inserts data in the given index.
+
         if (index < 0 || index > num_of_nodes)
             throw out_of_range("index out of range");
 
@@ -91,6 +106,8 @@ public:
         Node<E>* new_node = new Node<E>;
         Node<E>* current;
         set_to_index(current, index - 1);
+        // current to traverse to the index - 1. This is done so that a new
+        // node can be inserted at the specified index value safely.
 
         new_node->data = elem;
         new_node->next = current->next;
@@ -99,6 +116,8 @@ public:
     }
 
     void remove(int index) {
+        // Remove element at the given index.
+
         if (is_empty())
             throw length_error("stack is empty");
         if (index < 0 || index > num_of_nodes - 1)
@@ -111,14 +130,19 @@ public:
 
         Node<E>* current;
         set_to_index(current, index - 1);
-        Node<E>* temp = current->next;
+        // current to traverse to the index - 1. This is done so that the node
+        // after the given index can be removed safely.
 
+        Node<E>* temp = current->next;
         current->next = temp->next;
+
         delete temp;
         num_of_nodes--;
     }
 
     E& retrieve(int index) {
+        // Returns the element at the given index position.
+
         if (is_empty())
             throw length_error("stack is empty");
         if (index < 0 || index > num_of_nodes)
@@ -131,6 +155,8 @@ public:
     }
 
     void print() {
+        // Prints all of the elements in the stack.
+
         if (is_empty())
             throw length_error("stack is empty");
 
@@ -142,6 +168,8 @@ public:
     }
 
     void reverse() {
+        // Reverses the stack.
+
         if (is_empty())
             throw length_error("stack is empty");
 
@@ -160,6 +188,8 @@ public:
     }
 
     E& operator[](int index){
+        // Overloads [] for convention.
+
         return retrieve(index);
     }
 
