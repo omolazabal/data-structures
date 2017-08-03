@@ -23,7 +23,7 @@ private:
 
 
 template <typename E>
-class SLinkedList{
+class SLinkedList {
 private:
   Node<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
@@ -47,7 +47,7 @@ public:
   E& retrieve(int index);
 
   void print();
-  void reverse();
+  void reverse();  // Reverse the list.
   E& operator[](int index);
 };
 
@@ -66,8 +66,7 @@ SLinkedList<E>::~SLinkedList() {
 
 template <typename E>
 bool SLinkedList<E>::is_empty() {
-  // Returns true if there are nodes in the list, else
-  // returns false.
+  // Returns true if there are nodes in the list, else returns false.
   return num_of_nodes == 0;
 }
 
@@ -78,7 +77,7 @@ int SLinkedList<E>::length() {
 }
 
 template <typename E>
-void SLinkedList<E>::insert_front(const E& elem) {
+void SLinkedList<E>::insert_front(const E &elem) {
   // Adds a new element to the front of the list.
   Node<E>* new_node = new Node<E>;
   new_node->data = elem;
@@ -93,9 +92,10 @@ void SLinkedList<E>::remove_front() {
   if (is_empty())
     throw  length_error("list is empty");
 
-  Node<E>* temp = head;
+  Node<E>* front = head;
   head = head->next;
-  delete temp;
+  delete front;
+  front = nullptr;
   num_of_nodes--;
 }
 
@@ -120,7 +120,7 @@ void SLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
 }
 
 template <typename E>
-void SLinkedList<E>::insert(const E& elem, int index) {
+void SLinkedList<E>::insert(const E &elem, int index) {
   // Inserts data in the given index.
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index out of range");
@@ -162,6 +162,7 @@ void SLinkedList<E>::remove(int index) {
   current->next = temp->next;
 
   delete temp;
+  temp = nullptr;
   num_of_nodes--;
 }
 
@@ -214,7 +215,7 @@ void SLinkedList<E>::reverse_helper(Node<E>* ptr) {
 }
 
 template <typename E>
-E& SLinkedList<E>::operator[](int index){
+E& SLinkedList<E>::operator[](int index) {
   // Overloads [] for convention.
   return retrieve(index);
 }
