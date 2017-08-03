@@ -176,7 +176,6 @@ E& SLinkedList<E>::retrieve(int index) {
 
   Node<E>* current;
   set_to_index(current, index);
-
   return current->data;
 }
 
