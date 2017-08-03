@@ -1,6 +1,6 @@
 
-#ifndef STACK_H
-#define STACK_H
+#ifndef SINGLY_LINKED_LIST_H
+#define SINGLY_LINKED_LIST_H
 
 #include <stdexcept>
 #include <iostream>
@@ -11,36 +11,36 @@ using std::length_error;
 
 
 template <typename E>
-class Stack;  // Let Node class know Stack exists.
+class SLinkedList;  // Let Node class know SLL exists.
 
 template <typename E>
 class Node {
 private:
   E data;
   Node<E>* next;
-  friend class Stack<E>;
+  friend class SLinkedList<E>;
 };
 
 
 template <typename E>
-class Stack {
+class SLinkedList{
 private:
-  Node<E>* head;  // Pointer to front of the stack.
+  Node<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
 
   void set_to_index(Node<E>* &ptr, int index); // Move pointer to node on given index
   void reverse_helper(Node<E>* ptr);
 
 public:
-  Stack();
-  ~Stack();
+  SLinkedList();
+  ~SLinkedList();
 
   bool is_empty();
   int length();
 
-  void push(const E &elem);
-  void pop();
-  E& top();
+  void insert_front(const E &elem);
+  void remove_front();
+  E& get_front();
 
   void insert(const E &elem, int index);
   void remove(int index);
@@ -53,33 +53,33 @@ public:
 
 
 template <typename E>
-Stack<E>::Stack() {
+SLinkedList<E>::SLinkedList() {
   head = nullptr;
   num_of_nodes = 0;
 }
 
 template <typename E>
-Stack<E>::~Stack() {
+SLinkedList<E>::~SLinkedList() {
   while (!is_empty())
-    pop();
+    remove_front();
 }
 
 template <typename E>
-bool Stack<E>::is_empty() {
-  // Returns true if there are nodes in the stack, else
+bool SLinkedList<E>::is_empty() {
+  // Returns true if there are nodes in the list, else
   // returns false.
   return num_of_nodes == 0;
 }
 
 template <typename E>
-int Stack<E>::length() {
-  // Returns number of nodes in stack.
+int SLinkedList<E>::length() {
+  // Returns number of nodes in the list.
   return num_of_nodes;
 }
 
 template <typename E>
-void Stack<E>::push(const E& elem) {
-  // Adds a new element to the top of the stack.
+void SLinkedList<E>::insert_front(const E& elem) {
+  // Adds a new element to the front of the list.
   Node<E>* new_node = new Node<E>;
   new_node->data = elem;
   new_node->next = head;
@@ -88,10 +88,10 @@ void Stack<E>::push(const E& elem) {
 }
 
 template <typename E>
-void Stack<E>::pop() {
-  // Removes the top element of the stack.
+void SLinkedList<E>::remove_front() {
+  // Removes the front element of the list.
   if (is_empty())
-    throw  length_error("stack is empty");
+    throw  length_error("list is empty");
 
   Node<E>* temp = head;
   head = head->next;
@@ -100,16 +100,16 @@ void Stack<E>::pop() {
 }
 
 template <typename E>
-E& Stack<E>::top() {
-  // Returns the top element of the stack.
+E& SLinkedList<E>::get_front() {
+  // Returns the front element of the list.
   if (is_empty())
-    throw length_error("stack is empty");
+    throw length_error("list is empty");
 
   return head->data;
 }
 
 template <typename E>
-void Stack<E>::set_to_index(Node<E>* &ptr, int index) {
+void SLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
   // Traverses the given pointer to the given index.
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
@@ -120,13 +120,13 @@ void Stack<E>::set_to_index(Node<E>* &ptr, int index) {
 }
 
 template <typename E>
-void Stack<E>::insert(const E& elem, int index) {
+void SLinkedList<E>::insert(const E& elem, int index) {
   // Inserts data in the given index.
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index out of range");
 
   if (index == 0) {
-    push(elem);
+    insert_front(elem);
     return;
   }
 
@@ -143,15 +143,15 @@ void Stack<E>::insert(const E& elem, int index) {
 }
 
 template <typename E>
-void Stack<E>::remove(int index) {
+void SLinkedList<E>::remove(int index) {
   // Remove element at the given index.
   if (is_empty())
-    throw length_error("stack is empty");
+    throw length_error("SLinkedList is empty");
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
 
   if (index == 0) {
-    pop();
+    remove_front();
     return;
   }
 
@@ -166,10 +166,10 @@ void Stack<E>::remove(int index) {
 }
 
 template <typename E>
-E& Stack<E>::retrieve(int index) {
+E& SLinkedList<E>::retrieve(int index) {
   // Returns the element at the given index position.
   if (is_empty())
-    throw length_error("stack is empty");
+    throw length_error("list is empty");
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index out of range");
 
@@ -180,10 +180,10 @@ E& Stack<E>::retrieve(int index) {
 }
 
 template <typename E>
-void Stack<E>::print() {
-  // Prints all of the elements in the stack.
+void SLinkedList<E>::print() {
+  // Prints all of the elements in the list.
   if (is_empty())
-    throw length_error("stack is empty");
+    throw length_error("list is empty");
 
   Node<E>* current = head;
   while (current != nullptr) {
@@ -193,16 +193,16 @@ void Stack<E>::print() {
 }
 
 template <typename E>
-void Stack<E>::reverse() {
-  // Call to helper to reverse stack
+void SLinkedList<E>::reverse() {
+  // Call to helper to reverse list
   if (is_empty())
-    throw length_error("stack is empty");
+    throw length_error("list is empty");
   reverse_helper(head);
 }
 
 template <typename E>
-void Stack<E>::reverse_helper(Node<E>* ptr) {
-  // Reverse the stack
+void SLinkedList<E>::reverse_helper(Node<E>* ptr) {
+  // Reverse the list
   if (ptr->next == nullptr){
     head = ptr;
     return;
@@ -214,7 +214,7 @@ void Stack<E>::reverse_helper(Node<E>* ptr) {
 }
 
 template <typename E>
-E& Stack<E>::operator[](int index){
+E& SLinkedList<E>::operator[](int index){
   // Overloads [] for convention.
   return retrieve(index);
 }
