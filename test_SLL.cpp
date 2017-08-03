@@ -72,7 +72,7 @@ void test_list() {
 
   cout << endl << endl;
 
-  cout << "Inserting 100 101 102 to the front of the lsit...\n";
+  cout << "Inserting 100 101 102 to the front of the list...\n";
   list.insert_front(100);
   list.insert_front(101);
   list.insert_front(102);
