@@ -31,7 +31,6 @@ private:
   void set_to_index(Node<E>* &ptr, int index);  // Traverse pointer to given index
   void insert_helper(Node<E>* ptr, const E &elem);
   void remove_helper(Node<E>* ptr);
-  void reverse_helper(Node<E>* ptr);
 
 public:
   DLinkedList();
@@ -85,69 +84,77 @@ bool DLinkedList<E>::is_empty() {
 
 template <typename E>
 int DLinkedList<E>::length() {
-  // Return num of nodes in list.
+  // Return number of nodes in list.
   return num_of_nodes;
 }
 
 template <typename E>
-void DLinkedList<E>::insert_helper(Node<E>* ptr, const E &elem) {
-  // Allocates a new node and links it between ptr's node and the node after ptr.
+void DLinkedList<E>::insert_helper(Node<E>* predecessor, const E &elem) {
+  // Allocates a new node and links it between its predecessor node (the one
+  // passed in) and its successor node.
   Node<E>* new_node = new Node<E>;
   new_node->data = elem;
 
-  Node<E>* after_ptr = ptr->next;
-  ptr->next = new_node;
-  after_ptr->prev = new_node;
-  new_node->next = after_ptr;
-  new_node->prev = ptr;
+  Node<E>* successor = predecessor->next;
+  predecessor->next = new_node;
+  successor->prev = new_node;
+  new_node->next = successor;
+  new_node->prev = predecessor;
   num_of_nodes++;
 }
 
 template <typename E>
-void DLinkedList<E>::remove_helper(Node<E>* ptr) {
-  // Deletes the node that ptr points to and links the nodes that are before
-  // ptr and after ptr.
-  Node<E>* before_ptr = ptr->prev;
-  Node<E>* after_ptr = ptr->next;
-  before_ptr->next = after_ptr;
-  after_ptr->prev = before_ptr;
-  delete ptr;
+void DLinkedList<E>::remove_helper(Node<E>* to_remove) {
+  // Deletes the node that to_remove points to and links the nodes that are
+  // its predecessor and successor nodes.
+  Node<E>* predecessor = to_remove->prev;
+  Node<E>* successor = to_remove->next;
+  predecessor->next = successor;
+  successor->prev = predecessor;
+  delete to_remove;
   num_of_nodes--;
 }
 
 template <typename E>
 void DLinkedList<E>::insert_front(const E &elem) {
+  // Call to insert_helper to insert element after header.
   insert_helper(header, elem);
 }
 
 template <typename E>
 void DLinkedList<E>::remove_front() {
+  // Call to remove_helper to remove element after header.
   remove_helper(header->next);
 }
 
 template <typename E>
 void DLinkedList<E>::insert_back(const E &elem) {
+  // Call to insert_helper to insert element before trailer.
   insert_helper(trailer->prev, elem);
 }
 
 template <typename E>
 void DLinkedList<E>::remove_back() {
+  // Call to remove_helper to remove element before trailer.
   remove_helper(trailer->prev);
 }
 
 template <typename E>
 E& DLinkedList<E>::get_front() {
+  // Return front element.
   return header->next->data;
 }
 
 template <typename E>
 E& DLinkedList<E>::get_back() {
+  // Return back element.
   return trailer->prev->data;
 }
 
 template <typename E>
 void DLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
-  // Traverses the given pointer to the given index.a
+  // Traverses the given pointer to the given index. Checks to see if whether
+  // traversing from the header vs trailer is faster.
   if (index <= (num_of_nodes - 1)/2) {
     ptr = header->next;
     for (; index > 0; index--)
@@ -172,9 +179,11 @@ void DLinkedList<E>::insert(const E &elem, int index) {
     return;
   }
 
-  Node<E>* ptr;
-  set_to_index(ptr, index - 1);  // index - 1 because insert_helper() inserts a
-  insert_helper(ptr, elem);            // node after the passed in pointer.
+  Node<E>* predecessor;
+  set_to_index(predecessor, index - 1);
+  // Index - 1  because insert_helper inserts a node at the location that comes
+  // after the passed in pointer.
+  insert_helper(predecessor, elem);
 }
 
 template <typename E>
@@ -189,9 +198,9 @@ void DLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* ptr;
-  set_to_index(ptr, index);
-  remove_helper(ptr);
+  Node<E>* to_remove;
+  set_to_index(to_remove, index);
+  remove_helper(to_remove);
 }
 
 template <typename E>
@@ -213,24 +222,21 @@ void DLinkedList<E>::print() {
 
 template <typename E>
 void DLinkedList<E>::reverse() {
-  reverse_helper(header);
-}
-
-template <typename E>
-void DLinkedList<E>::reverse_helper(Node<E>* ptr) {
   // Reverse the list
-  if (ptr == trailer) {
-    Node<E>* temp = header;
-    header = trailer;
-    trailer = temp;
-    header->prev = header->next;
-    return;
+  Node<E>* current = header;
+  Node<E>* successor = current;
+
+  while (current != nullptr) {
+    successor = current->next;
+    current->next = current->prev;
+    current->prev = successor;
+    current = successor;
   }
 
-  reverse_helper(ptr->next);
-  ptr->next->next = ptr;
-  ptr->prev = ptr->next;
-  ptr->next = nullptr;
+  // Swap header and trailer
+  Node<E>* temp = header;
+  header = trailer;
+  trailer = temp;
 }
 
 template <typename E>
