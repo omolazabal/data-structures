@@ -213,6 +213,7 @@ E& DLinkedList<E>::retrieve(int index) {
 
 template <typename E>
 void DLinkedList<E>::print() {
+  // Iterate and print all elements in the list.
   Node<E>* current = header->next;
   while (current != trailer) {
     cout << current->data << " ";
