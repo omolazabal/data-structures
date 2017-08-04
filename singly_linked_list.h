@@ -27,9 +27,7 @@ class SLinkedList {
 private:
   Node<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
-
   void set_to_index(Node<E>* &ptr, int index); // Move pointer to node on given index
-  void reverse_helper(Node<E>* ptr);
 
 public:
   SLinkedList();
@@ -131,14 +129,14 @@ void SLinkedList<E>::insert(const E &elem, int index) {
   }
 
   Node<E>* new_node = new Node<E>;
-  Node<E>* current;
-  set_to_index(current, index - 1);
-  // current to traverse to the index - 1. This is done so that a new
-  // node can be inserted at the specified index value safely.
+  Node<E>* predecessor;  // Predecessor to new_node
+  set_to_index(predecessor, index - 1);
+  // Predecessor to traverse to the index - 1. This is done so that new_node
+  // can be inserted at the specified index value.
 
   new_node->data = elem;
-  new_node->next = current->next;
-  current->next = new_node;
+  new_node->next = predecessor->next;
+  predecessor->next = new_node;
   num_of_nodes++;
 }
 
@@ -155,14 +153,14 @@ void SLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* current;
-  set_to_index(current, index - 1);
+  Node<E>* predecessor;
+  set_to_index(predecessor, index - 1);
 
-  Node<E>* temp = current->next;
-  current->next = temp->next;
+  Node<E>* to_remove = predecessor->next;
+  predecessor->next = to_remove->next;
 
-  delete temp;
-  temp = nullptr;
+  delete to_remove;
+  to_remove = nullptr;
   num_of_nodes--;
 }
 
@@ -197,20 +195,19 @@ void SLinkedList<E>::reverse() {
   // Call to helper to reverse list
   if (is_empty())
     throw length_error("list is empty");
-  reverse_helper(head);
-}
+  Node<E>* predecessor = nullptr;
+  Node<E>* current = head;
+  Node<E>* successor = current;
 
-template <typename E>
-void SLinkedList<E>::reverse_helper(Node<E>* ptr) {
-  // Reverse the list
-  if (ptr->next == nullptr){
-    head = ptr;
-    return;
+  // Iterate through list and reverse the pointers of each node.
+  while (current != nullptr) {
+    successor = current->next;
+    current->next = predecessor;
+    predecessor = current;
+    current = successor;
   }
 
-  reverse_helper(ptr->next);
-  ptr->next->next = ptr;
-  ptr->next = nullptr;
+  head = predecessor;
 }
 
 template <typename E>
