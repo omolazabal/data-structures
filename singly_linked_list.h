@@ -144,7 +144,7 @@ template <typename E>
 void SLinkedList<E>::remove(int index) {
   // Remove element at the given index.
   if (is_empty())
-    throw length_error("SLinkedList is empty");
+    throw length_error("list is empty");
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
 
