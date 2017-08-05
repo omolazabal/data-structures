@@ -124,6 +124,8 @@ void DLinkedList<E>::insert_front(const E &elem) {
 template <typename E>
 void DLinkedList<E>::remove_front() {
   // Call to remove_helper to remove element after header.
+  if (is_empty())
+    throw length_error("list is empty");
   remove_helper(header->next);
 }
 
@@ -136,18 +138,24 @@ void DLinkedList<E>::insert_back(const E &elem) {
 template <typename E>
 void DLinkedList<E>::remove_back() {
   // Call to remove_helper to remove element before trailer.
+  if (is_empty())
+    throw length_error("list is empty");
   remove_helper(trailer->prev);
 }
 
 template <typename E>
 E& DLinkedList<E>::get_front() {
   // Return front element.
+  if (is_empty())
+    throw length_error("list is empty");
   return header->next->data;
 }
 
 template <typename E>
 E& DLinkedList<E>::get_back() {
   // Return back element.
+  if (is_empty())
+    throw length_error("list is empty");
   return trailer->prev->data;
 }
 
@@ -189,6 +197,11 @@ void DLinkedList<E>::insert(const E &elem, int index) {
 template <typename E>
 void DLinkedList<E>::remove(int index) {
   // Remove a node at the given index.
+  if (is_empty())
+    throw length_error("list is empty");
+  if (index < 0 || index > num_of_nodes - 1)
+    throw out_of_range("index out of range");
+
   if (index == 0) {
     remove_front();
     return;
@@ -206,6 +219,11 @@ void DLinkedList<E>::remove(int index) {
 template <typename E>
 E& DLinkedList<E>::retrieve(int index) {
   // Returns the element at the given index position.
+  if (is_empty())
+    throw length_error("list is empty");
+  if (index < ) || index > num_of_nodes)
+    throw out_of_range("index is out of range");
+
   Node<E>* ptr;
   set_to_index(ptr, index);
   return ptr->data;
@@ -214,6 +232,9 @@ E& DLinkedList<E>::retrieve(int index) {
 template <typename E>
 void DLinkedList<E>::print() {
   // Iterate and print all elements in the list.
+  if (is_empty())
+    throw length_error("list is empty");
+
   Node<E>* current = header->next;
   while (current != trailer) {
     cout << current->data << " ";
@@ -224,6 +245,8 @@ void DLinkedList<E>::print() {
 template <typename E>
 void DLinkedList<E>::reverse() {
   // Reverse the list
+  if (is_empty())
+    throw length_error("list is empty");
   Node<E>* current = header;
   Node<E>* successor = current;
 
