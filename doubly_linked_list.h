@@ -30,7 +30,7 @@ private:
   int num_of_nodes;
   void set_to_index(Node<E>* &, int);  // Traverse pointer to given index
   void insert_helper(Node<E>*, const E &);
-  void remove_helper(Node<E>*);
+  void remove_helper(Node<E>* &);
 
 public:
   DLinkedList();
@@ -71,9 +71,7 @@ DLinkedList<E>::~DLinkedList() {
   while (!is_empty())
     remove_front();
   delete header;
-  header = nullptr;
   delete trailer;
-  trailer = nullptr;
 }
 
 template <typename E>
@@ -104,7 +102,7 @@ void DLinkedList<E>::insert_helper(Node<E>* predecessor, const E &elem) {
 }
 
 template <typename E>
-void DLinkedList<E>::remove_helper(Node<E>* to_remove) {
+void DLinkedList<E>::remove_helper(Node<E>* &to_remove) {
   // Deletes the node that to_remove points to and links the nodes that are
   // its predecessor and successor nodes.
   Node<E>* predecessor = to_remove->prev;
@@ -112,6 +110,7 @@ void DLinkedList<E>::remove_helper(Node<E>* to_remove) {
   predecessor->next = successor;
   successor->prev = predecessor;
   delete to_remove;
+  to_remove = nullptr;
   num_of_nodes--;
 }
 
@@ -126,7 +125,8 @@ void DLinkedList<E>::remove_front() {
   // Call to remove_helper to remove element after header.
   if (is_empty())
     throw length_error("list is empty");
-  remove_helper(header->next);
+  Node<E>* to_remove = header->next;
+  remove_helper(to_remove);
 }
 
 template <typename E>
@@ -140,7 +140,8 @@ void DLinkedList<E>::remove_back() {
   // Call to remove_helper to remove element before trailer.
   if (is_empty())
     throw length_error("list is empty");
-  remove_helper(trailer->prev);
+  Node<E>* to_remove = trailer->prev;
+  remove_helper(to_remove);
 }
 
 template <typename E>
