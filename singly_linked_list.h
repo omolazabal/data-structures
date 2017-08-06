@@ -27,7 +27,7 @@ class SLinkedList {
 private:
   Node<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
-  void set_to_index(Node<E>* &ptr, int index); // Move pointer to node on given index
+  void set_to_index(Node<E>* &, int); // Move pointer to node on given index
 
 public:
   SLinkedList();
@@ -36,17 +36,17 @@ public:
   bool is_empty();
   int length();
 
-  void insert_front(const E &elem);
+  void insert_front(const E &);
   void remove_front();
   E& get_front();
 
-  void insert(const E &elem, int index);
-  void remove(int index);
-  E& retrieve(int index);
+  void insert(const E &, int);
+  void remove(int);
+  E& retrieve(int);
 
   void print();
   void reverse();  // Reverse the list.
-  E& operator[](int index);
+  E& operator[](int);
 };
 
 

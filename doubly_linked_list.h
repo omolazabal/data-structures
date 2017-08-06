@@ -28,9 +28,9 @@ private:
   Node<E>* header;  // Pointer to the front of the list
   Node<E>* trailer;  // Pointer to the end of the list
   int num_of_nodes;
-  void set_to_index(Node<E>* &ptr, int index);  // Traverse pointer to given index
-  void insert_helper(Node<E>* ptr, const E &elem);
-  void remove_helper(Node<E>* ptr);
+  void set_to_index(Node<E>* &, int);  // Traverse pointer to given index
+  void insert_helper(Node<E>*, const E &);
+  void remove_helper(Node<E>*);
 
 public:
   DLinkedList();
@@ -39,20 +39,20 @@ public:
   bool is_empty();
   int length();
 
-  void insert_front(const E &elem);
+  void insert_front(const E &);
   void remove_front();
-  void insert_back(const E &elem);
+  void insert_back(const E &);
   void remove_back();
   E& get_front();
   E& get_back();
 
-  void insert(const E &elem, int index);
-  void remove(int index);
-  E& retrieve(int index);
+  void insert(const E &, int);
+  void remove(int);
+  E& retrieve(int);
 
   void print();
   void reverse();  // Reverse the list
-  E& operator[](int index);
+  E& operator[](int);
 };
 
 template <typename E>
@@ -221,7 +221,7 @@ E& DLinkedList<E>::retrieve(int index) {
   // Returns the element at the given index position.
   if (is_empty())
     throw length_error("list is empty");
-  if (index < ) || index > num_of_nodes)
+  if (index < 0 || index > num_of_nodes)
     throw out_of_range("index is out of range");
 
   Node<E>* ptr;
