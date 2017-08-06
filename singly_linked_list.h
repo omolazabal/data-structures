@@ -154,11 +154,12 @@ void SLinkedList<E>::remove(int index) {
   }
 
   Node<E>* predecessor;
+  // Traverse predecessor to node that comes before the one that needs to
+  // be deleted.
   set_to_index(predecessor, index - 1);
 
   Node<E>* to_remove = predecessor->next;
   predecessor->next = to_remove->next;
-
   delete to_remove;
   to_remove = nullptr;
   num_of_nodes--;
@@ -206,7 +207,6 @@ void SLinkedList<E>::reverse() {
     predecessor = current;
     current = successor;
   }
-
   head = predecessor;
 }
 
