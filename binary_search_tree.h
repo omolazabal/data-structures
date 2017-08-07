@@ -6,6 +6,7 @@
 
 using std::cout;
 using std::invalid_argument;
+using std::length_error;
 
 enum traversal_order {preorder, inorder, postorder};
 
@@ -62,7 +63,7 @@ BinarySearchTree<E>::BinarySearchTree() {
 
 template <typename E>
 BinarySearchTree<E>::~BinarySearchTree() {
-  remove_all();
+  remove_all_helper(root);
 }
 
 template <typename E>
@@ -96,7 +97,6 @@ void BinarySearchTree<E>::insert_helper(Node<E>* &ptr, const E &elem) {
 
 template <typename E>
 bool BinarySearchTree<E>::is_leaf_node(Node<E>* ptr) {
-  // TODO empty exception
   if (ptr->left_child == nullptr && ptr->right_child == nullptr)
     return true;
   return false;
@@ -104,7 +104,6 @@ bool BinarySearchTree<E>::is_leaf_node(Node<E>* ptr) {
 
 template <typename E>
 bool BinarySearchTree<E>::only_one_child(Node<E>* ptr) {
-  // TODO empty exception
   if (ptr->left_child == nullptr && ptr->right_child != nullptr)
     return true;
   if (ptr->right_child == nullptr && ptr->left_child != nullptr)
@@ -114,7 +113,9 @@ bool BinarySearchTree<E>::only_one_child(Node<E>* ptr) {
 
 template <typename E>
 Node<E>* BinarySearchTree<E>::get_min_ptr(Node<E>* ptr) {
-  // TODO empty exception
+  if (ptr == nullptr)
+    throw invalid_argument("ptr has null value, cannot find minimum value");
+
   if (ptr->left_child == nullptr) {
     return ptr;
   }
@@ -175,6 +176,8 @@ void BinarySearchTree<E>::insert(const E &elem) {
 
 template <typename E>
 void BinarySearchTree<E>::remove(const E &elem) {
+  if (is_empty())
+    throw length_error("tree is empty, nothing to remove");
   remove_helper(root, elem);
   num_of_nodes--;
 };
@@ -194,6 +197,8 @@ E& BinarySearchTree<E>::retrieve_helper(Node<E>* &ptr, const E &elem) {
 
 template <typename E>
 E& BinarySearchTree<E>::retrieve(const E &elem) {
+  if (is_empty())
+    throw length_error("tree is empty, nothing to retrieve");
   return retrieve_helper(root, elem);
 }
 
@@ -220,6 +225,8 @@ void BinarySearchTree<E>::print_helper(Node<E>* ptr, traversal_order order) {
 
 template <typename E>
 void BinarySearchTree<E>::print(traversal_order order) {
+  if (is_empty())
+    throw length_error("tree is empty, nothing to print");
   print_helper(root, order);
   cout.flush();
 }
@@ -236,6 +243,8 @@ void BinarySearchTree<E>::remove_all_helper(Node<E>* &ptr) {
 
 template <typename E>
 void BinarySearchTree<E>::remove_all() {
+  if (is_empty())
+    throw length_error("tree is empty, nothing to remove");
   remove_all_helper(root);
   num_of_nodes = 0;
 }
