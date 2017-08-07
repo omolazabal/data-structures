@@ -164,6 +164,9 @@ template <typename E>
 Node<E>* DLinkedList<E>::get_ptr_at(int index) {
   // Traverses the given pointer to the given index. Checks to see if whether
   // traversing from the header vs trailer is faster.
+  if (index < 0 || index > num_of_nodes - 1)
+    throw out_of_range("index out of range");
+
   Node<E>* ptr;
   if (index <= (num_of_nodes - 1)/2) {
     ptr = header->next;
