@@ -118,7 +118,7 @@ Node<E>* BinarySearchTree<E>::get_min_ptr(Node<E>* ptr) {
   if (ptr->left_child == nullptr) {
     return ptr;
   }
-  return get_min_ptr(ptr);
+  return get_min_ptr(ptr->left_child);
 }
 
 template <typename E>
@@ -148,9 +148,9 @@ void BinarySearchTree<E>::remove_node(Node<E>* &ptr) {
 
   // Case in which there are two children.
   else {
-    Node<E>* temp = find_min(ptr->right_child);
+    Node<E>* temp = get_min_ptr(ptr->right_child);
     ptr->data = temp->data;
-    remove_node(temp);
+    remove_helper(ptr->right_child, temp->data);
   }
 }
 
