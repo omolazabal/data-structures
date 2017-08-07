@@ -27,7 +27,7 @@ class SLinkedList {
 private:
   Node<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
-  void set_to_index(Node<E>* &, int); // Move pointer to node on given index
+  Node<E>* get_ptr_at(int); // Move pointer to node on given index
 
 public:
   SLinkedList();
@@ -107,14 +107,15 @@ E& SLinkedList<E>::get_front() {
 }
 
 template <typename E>
-void SLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
+Node<E>* SLinkedList<E>::get_ptr_at(int index) {
   // Traverses the given pointer to the given index.
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
 
-  ptr = head;
+  Node<E>* ptr = head;
   for (; index > 0; index--)
     ptr = ptr->next;
+  return ptr;
 }
 
 template <typename E>
@@ -129,8 +130,7 @@ void SLinkedList<E>::insert(const E &elem, int index) {
   }
 
   Node<E>* new_node = new Node<E>;
-  Node<E>* predecessor;  // Predecessor to new_node
-  set_to_index(predecessor, index - 1);
+  Node<E>* predecessor = get_ptr_at(index - 1);  // Predecessor to new_node.
   // Predecessor to traverse to the index - 1. This is done so that new_node
   // can be inserted at the specified index value.
 
@@ -153,10 +153,9 @@ void SLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* predecessor;
+  Node<E>* predecessor = get_ptr_at(index - 1);
   // Traverse predecessor to node that comes before the one that needs to
   // be deleted.
-  set_to_index(predecessor, index - 1);
 
   Node<E>* to_remove = predecessor->next;
   predecessor->next = to_remove->next;
@@ -173,8 +172,7 @@ E& SLinkedList<E>::retrieve(int index) {
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index out of range");
 
-  Node<E>* current;
-  set_to_index(current, index);
+  Node<E>* current = get_ptr_at(index);
   return current->data;
 }
 
