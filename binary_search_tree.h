@@ -57,7 +57,7 @@ public:
 template <typename E>
 BinarySearchTree<E>::BinarySearchTree() {
   root = nullptr;
-  size = 0;
+  num_of_nodes = 0;
 }
 
 template <typename E>
@@ -169,12 +169,14 @@ void BinarySearchTree<E>::remove_helper(Node<E>* &ptr, const E &elem) {
 
 template <typename E>
 void BinarySearchTree<E>::insert(const E &elem) {
-  insert_helper(elem);
+  insert_helper(root, elem);
+  num_of_nodes++;
 }
 
 template <typename E>
 void BinarySearchTree<E>::remove(const E &elem) {
   remove_helper(root, elem);
+  num_of_nodes--;
 };
 
 template <typename E>
@@ -219,6 +221,7 @@ void BinarySearchTree<E>::print_helper(Node<E>* ptr, traversal_order order) {
 template <typename E>
 void BinarySearchTree<E>::print(traversal_order order) {
   print_helper(root, order);
+  cout.flush();
 }
 
 template <typename E>
@@ -234,6 +237,7 @@ void BinarySearchTree<E>::remove_all_helper(Node<E>* &ptr) {
 template <typename E>
 void BinarySearchTree<E>::remove_all() {
   remove_all_helper(root);
+  num_of_nodes = 0;
 }
 
 #endif
