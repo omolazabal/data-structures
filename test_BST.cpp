@@ -97,6 +97,7 @@ void test_BST() {
   catch (exception &e) {
       cerr << e.what();
   }
+  cout << "\nSize: " << tree.size();
 
   cout << endl << endl;
 
