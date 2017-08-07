@@ -28,7 +28,7 @@ private:
   Node<E>* header;  // Pointer to the front of the list
   Node<E>* trailer;  // Pointer to the end of the list
   int num_of_nodes;
-  void set_to_index(Node<E>* &, int);  // Traverse pointer to given index
+  Node<E>* get_ptr_at(int);  // Traverse pointer to given index
   void insert_helper(Node<E>*, const E &);
   void remove_helper(Node<E>* &);
 
@@ -161,9 +161,10 @@ E& DLinkedList<E>::get_back() {
 }
 
 template <typename E>
-void DLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
+Node<E>* DLinkedList<E>::get_ptr_at(int index) {
   // Traverses the given pointer to the given index. Checks to see if whether
   // traversing from the header vs trailer is faster.
+  Node<E>* ptr;
   if (index <= (num_of_nodes - 1)/2) {
     ptr = header->next;
     for (; index > 0; index--)
@@ -174,6 +175,7 @@ void DLinkedList<E>::set_to_index(Node<E>* &ptr, int index) {
     for (; index < num_of_nodes - 1; index++)
       ptr = ptr->prev;
   }
+  return ptr;
 }
 
 template <typename E>
@@ -188,8 +190,7 @@ void DLinkedList<E>::insert(const E &elem, int index) {
     return;
   }
 
-  Node<E>* predecessor;
-  set_to_index(predecessor, index - 1);
+  Node<E>* predecessor = get_ptr_at(index - 1);
   // Index - 1  because insert_helper inserts a node at the location that comes
   // after the passed in pointer.
   insert_helper(predecessor, elem);
@@ -212,8 +213,7 @@ void DLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* to_remove;
-  set_to_index(to_remove, index);
+  Node<E>* to_remove = get_ptr_at(index);
   remove_helper(to_remove);
 }
 
@@ -225,8 +225,7 @@ E& DLinkedList<E>::retrieve(int index) {
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index is out of range");
 
-  Node<E>* ptr;
-  set_to_index(ptr, index);
+  Node<E>* ptr = get_ptr_at(index);
   return ptr->data;
 }
 
