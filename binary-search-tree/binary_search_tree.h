@@ -14,10 +14,10 @@ template <typename E>
 class BinarySearchTree;  // Let node class know BST exists.
 
 template <typename E>
-class Node {
+class BNode {
   E data;
-  Node<E>* left_child;
-  Node<E>* right_child;
+  BNode<E>* left_child;
+  BNode<E>* right_child;
   friend class BinarySearchTree<E>;
 };
 
@@ -25,20 +25,20 @@ class Node {
 template <typename E>
 class BinarySearchTree {
 private:
-  Node<E>* root;
+  BNode<E>* root;
   int num_of_nodes;
 
   // Helper functions to perform recursion.
-  void insert_helper(Node<E>* &, const E &);
-  void remove_node(Node<E>* &);
-  void remove_helper(Node<E>* &, const E &);
-  E& retrieve_helper(Node<E>* &, const E &);
-  void print_helper(Node<E>*, traversal_order);
-  void remove_all_helper(Node<E>* &);
+  void insert_helper(BNode<E>* &, const E &);
+  void remove_node(BNode<E>* &);
+  void remove_helper(BNode<E>* &, const E &);
+  E& retrieve_helper(BNode<E>* &, const E &);
+  void print_helper(BNode<E>*, traversal_order);
+  void remove_all_helper(BNode<E>* &);
 
-  bool is_leaf_node(Node<E>*);  // Check if node it a leaf node
-  bool only_one_child(Node<E>*);  // Check if node has only one child node
-  Node<E>* get_min_ptr(Node<E>*);  // Find the pointer that points to the
+  bool is_leaf_node(BNode<E>*);  // Check if node it a leaf node
+  bool only_one_child(BNode<E>*);  // Check if node has only one child node
+  BNode<E>* get_min_ptr(BNode<E>*);  // Find the pointer that points to the
                                    // minimum value.
 
 public:
@@ -80,13 +80,13 @@ int BinarySearchTree<E>::size() {
 }
 
 template <typename E>
-void BinarySearchTree<E>::insert_helper(Node<E>* &ptr, const E &elem) {
+void BinarySearchTree<E>::insert_helper(BNode<E>* &ptr, const E &elem) {
   // Recursively traverse utill you reach a leaf node's child node (nullptr). Once
   // reached, allocate a new node and replace the nullptr to point to that new node.
 
   if (ptr == nullptr) {
     // Add new node to tree.
-    Node<E>* new_node = new Node<E>;
+    BNode<E>* new_node = new BNode<E>;
     new_node->data = elem;
     ptr = new_node;
     return;
@@ -102,7 +102,7 @@ void BinarySearchTree<E>::insert_helper(Node<E>* &ptr, const E &elem) {
 }
 
 template <typename E>
-bool BinarySearchTree<E>::is_leaf_node(Node<E>* ptr) {
+bool BinarySearchTree<E>::is_leaf_node(BNode<E>* ptr) {
   // Check it passed in pointer points to a leaf node.
   if (ptr->left_child == nullptr && ptr->right_child == nullptr)
     return true;
@@ -110,7 +110,7 @@ bool BinarySearchTree<E>::is_leaf_node(Node<E>* ptr) {
 }
 
 template <typename E>
-bool BinarySearchTree<E>::only_one_child(Node<E>* ptr) {
+bool BinarySearchTree<E>::only_one_child(BNode<E>* ptr) {
   // Check if passed in pointer points to a node with only one child.
   if (ptr->left_child == nullptr && ptr->right_child != nullptr)
     return true;
@@ -120,7 +120,7 @@ bool BinarySearchTree<E>::only_one_child(Node<E>* ptr) {
 }
 
 template <typename E>
-Node<E>* BinarySearchTree<E>::get_min_ptr(Node<E>* ptr) {
+BNode<E>* BinarySearchTree<E>::get_min_ptr(BNode<E>* ptr) {
   // Traverse the passed in pointer to the minimum value of the tree/subtree.
   if (ptr == nullptr)
     throw invalid_argument("ptr has null value, cannot find minimum value");
@@ -132,7 +132,7 @@ Node<E>* BinarySearchTree<E>::get_min_ptr(Node<E>* ptr) {
 }
 
 template <typename E>
-void BinarySearchTree<E>::remove_node(Node<E>* &ptr) {
+void BinarySearchTree<E>::remove_node(BNode<E>* &ptr) {
   // Remove node that the passed in pointer points to. There are three cases
   // that have to be taken cared of: The node that needs to be removed (1) is
   // a leaf node, (2) has only one child, or (3) has two child nodes.
@@ -151,14 +151,14 @@ void BinarySearchTree<E>::remove_node(Node<E>* &ptr) {
     if (ptr->left_child == nullptr) {
       // Change ptr to point to its right child and delete the node that it
       // previously pointed to.
-      Node<E>* to_remove = ptr;
+      BNode<E>* to_remove = ptr;
       ptr = ptr->right_child;
       delete to_remove;
       to_remove = nullptr;
     }
     else if (ptr->right_child == nullptr) {
       // Preform the same as above but with opposite child.
-      Node<E>* to_remove = ptr;
+      BNode<E>* to_remove = ptr;
       ptr = ptr->left_child;
       delete to_remove;
       to_remove = nullptr;
@@ -170,14 +170,14 @@ void BinarySearchTree<E>::remove_node(Node<E>* &ptr) {
     // Find the minimum value of the subtree with ptr->right_child as root, then
     // replace ptr's data with the minimum value. Finally, delete the node that
     // originally had the minimum value.
-    Node<E>* min = get_min_ptr(ptr->right_child);
+    BNode<E>* min = get_min_ptr(ptr->right_child);
     ptr->data = min->data;
     remove_helper(ptr->right_child, min->data);
   }
 }
 
 template <typename E>
-void BinarySearchTree<E>::remove_helper(Node<E>* &ptr, const E &elem) {
+void BinarySearchTree<E>::remove_helper(BNode<E>* &ptr, const E &elem) {
   // Traverses ptr to the node that needs to be deleted.
   if (ptr == nullptr)
     throw invalid_argument("value not in tree");
@@ -208,7 +208,7 @@ void BinarySearchTree<E>::remove(const E &elem) {
 };
 
 template <typename E>
-E& BinarySearchTree<E>::retrieve_helper(Node<E>* &ptr, const E &elem) {
+E& BinarySearchTree<E>::retrieve_helper(BNode<E>* &ptr, const E &elem) {
   // Traverses to the node the matches elem. Returns that value.
   if (ptr == nullptr)
     throw invalid_argument("value not in tree");
@@ -230,7 +230,7 @@ E& BinarySearchTree<E>::retrieve(const E &elem) {
 }
 
 template <typename E>
-void BinarySearchTree<E>::print_helper(Node<E>* ptr, traversal_order order) {
+void BinarySearchTree<E>::print_helper(BNode<E>* ptr, traversal_order order) {
   // Performs preorder, inorder, and postorder traversal.
   if (ptr != nullptr) {
     // Pop off the recursive stack if reached nullptr.
@@ -264,7 +264,7 @@ void BinarySearchTree<E>::print(traversal_order order) {
 }
 
 template <typename E>
-void BinarySearchTree<E>::remove_all_helper(Node<E>* &ptr) {
+void BinarySearchTree<E>::remove_all_helper(BNode<E>* &ptr) {
   // Traverses the tree in postorder order and removes the nodes one at a time.
   if (ptr != nullptr) {
     // Pop of the recursive stack if reached nullptr.

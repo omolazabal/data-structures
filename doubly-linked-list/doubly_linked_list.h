@@ -10,14 +10,14 @@ using std::length_error;
 
 
 template <typename E>
-class DLinkedList;  // Let Node class know DLL exists
+class DLinkedList;  // Let DNode class know DLL exists
 
 template <typename E>
-class Node {
+class DNode {
 private:
   E data;
-  Node<E>* next;
-  Node<E>* prev;
+  DNode<E>* next;
+  DNode<E>* prev;
   friend class DLinkedList<E>;
 };
 
@@ -25,12 +25,12 @@ private:
 template <typename E>
 class DLinkedList {
 private:
-  Node<E>* header;  // Pointer to the front of the list
-  Node<E>* trailer;  // Pointer to the end of the list
+  DNode<E>* header;  // Pointer to the front of the list
+  DNode<E>* trailer;  // Pointer to the end of the list
   int num_of_nodes;
-  Node<E>* get_ptr_at(int);  // Traverse pointer to given index
-  void insert_helper(Node<E>*, const E &);
-  void remove_helper(Node<E>* &);
+  DNode<E>* get_ptr_at(int);  // Traverse pointer to given index
+  void insert_helper(DNode<E>*, const E &);
+  void remove_helper(DNode<E>* &);
 
 public:
   DLinkedList();
@@ -58,8 +58,8 @@ public:
 template <typename E>
 DLinkedList<E>::DLinkedList() {
   // Initialize sentinel nodes.
-  header = new Node<E>;
-  trailer = new Node<E>;
+  header = new DNode<E>;
+  trailer = new DNode<E>;
   header->next = trailer;
   trailer->prev = header;
   num_of_nodes = 0;
@@ -87,13 +87,13 @@ int DLinkedList<E>::length() {
 }
 
 template <typename E>
-void DLinkedList<E>::insert_helper(Node<E>* predecessor, const E &elem) {
+void DLinkedList<E>::insert_helper(DNode<E>* predecessor, const E &elem) {
   // Allocates a new node and links it between its predecessor node (the one
   // passed in) and its successor node.
-  Node<E>* new_node = new Node<E>;
+  DNode<E>* new_node = new DNode<E>;
   new_node->data = elem;
 
-  Node<E>* successor = predecessor->next;
+  DNode<E>* successor = predecessor->next;
   predecessor->next = new_node;
   successor->prev = new_node;
   new_node->next = successor;
@@ -102,11 +102,11 @@ void DLinkedList<E>::insert_helper(Node<E>* predecessor, const E &elem) {
 }
 
 template <typename E>
-void DLinkedList<E>::remove_helper(Node<E>* &to_remove) {
+void DLinkedList<E>::remove_helper(DNode<E>* &to_remove) {
   // Deletes the node that to_remove points to and links the nodes that are
   // its predecessor and successor nodes.
-  Node<E>* predecessor = to_remove->prev;
-  Node<E>* successor = to_remove->next;
+  DNode<E>* predecessor = to_remove->prev;
+  DNode<E>* successor = to_remove->next;
   predecessor->next = successor;
   successor->prev = predecessor;
   delete to_remove;
@@ -125,7 +125,7 @@ void DLinkedList<E>::remove_front() {
   // Call to remove_helper to remove element after header.
   if (is_empty())
     throw length_error("list is empty");
-  Node<E>* to_remove = header->next;
+  DNode<E>* to_remove = header->next;
   remove_helper(to_remove);
 }
 
@@ -140,7 +140,7 @@ void DLinkedList<E>::remove_back() {
   // Call to remove_helper to remove element before trailer.
   if (is_empty())
     throw length_error("list is empty");
-  Node<E>* to_remove = trailer->prev;
+  DNode<E>* to_remove = trailer->prev;
   remove_helper(to_remove);
 }
 
@@ -161,13 +161,13 @@ E& DLinkedList<E>::get_back() {
 }
 
 template <typename E>
-Node<E>* DLinkedList<E>::get_ptr_at(int index) {
+DNode<E>* DLinkedList<E>::get_ptr_at(int index) {
   // Traverses the given pointer to the given index. Checks to see if whether
   // traversing from the header vs trailer is faster.
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
 
-  Node<E>* ptr;
+  DNode<E>* ptr;
   if (index <= (num_of_nodes - 1)/2) {
     ptr = header->next;
     for (; index > 0; index--)
@@ -193,7 +193,7 @@ void DLinkedList<E>::insert(const E &elem, int index) {
     return;
   }
 
-  Node<E>* predecessor = get_ptr_at(index - 1);
+  DNode<E>* predecessor = get_ptr_at(index - 1);
   // Index - 1  because insert_helper inserts a node at the location that comes
   // after the passed in pointer.
   insert_helper(predecessor, elem);
@@ -216,7 +216,7 @@ void DLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* to_remove = get_ptr_at(index);
+  DNode<E>* to_remove = get_ptr_at(index);
   remove_helper(to_remove);
 }
 
@@ -228,7 +228,7 @@ E& DLinkedList<E>::retrieve(int index) {
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index is out of range");
 
-  Node<E>* ptr = get_ptr_at(index);
+  DNode<E>* ptr = get_ptr_at(index);
   return ptr->data;
 }
 
@@ -238,7 +238,7 @@ void DLinkedList<E>::print() {
   if (is_empty())
     throw length_error("list is empty");
 
-  Node<E>* current = header->next;
+  DNode<E>* current = header->next;
   while (current != trailer) {
     cout << current->data << " ";
     current = current->next;
@@ -250,8 +250,8 @@ void DLinkedList<E>::reverse() {
   // Reverse the list
   if (is_empty())
     throw length_error("list is empty");
-  Node<E>* current = header;
-  Node<E>* successor = current;
+  DNode<E>* current = header;
+  DNode<E>* successor = current;
 
   while (current != nullptr) {
     successor = current->next;
@@ -261,7 +261,7 @@ void DLinkedList<E>::reverse() {
   }
 
   // Swap header and trailer
-  Node<E>* temp = header;
+  DNode<E>* temp = header;
   header = trailer;
   trailer = temp;
 }

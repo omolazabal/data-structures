@@ -11,13 +11,13 @@ using std::length_error;
 
 
 template <typename E>
-class SLinkedList;  // Let Node class know SLL exists.
+class SLinkedList;  // Let SNode class know SLL exists.
 
 template <typename E>
-class Node {
+class SNode {
 private:
   E data;
-  Node<E>* next;
+  SNode<E>* next;
   friend class SLinkedList<E>;
 };
 
@@ -25,9 +25,9 @@ private:
 template <typename E>
 class SLinkedList {
 private:
-  Node<E>* head;  // Pointer to front of the list.
+  SNode<E>* head;  // Pointer to front of the list.
   int num_of_nodes;
-  Node<E>* get_ptr_at(int); // Move pointer to node on given index
+  SNode<E>* get_ptr_at(int); // Move pointer to node on given index
 
 public:
   SLinkedList();
@@ -77,7 +77,7 @@ int SLinkedList<E>::length() {
 template <typename E>
 void SLinkedList<E>::insert_front(const E &elem) {
   // Adds a new element to the front of the list.
-  Node<E>* new_node = new Node<E>;
+  SNode<E>* new_node = new SNode<E>;
   new_node->data = elem;
   new_node->next = head;
   head = new_node;
@@ -90,7 +90,7 @@ void SLinkedList<E>::remove_front() {
   if (is_empty())
     throw  length_error("list is empty");
 
-  Node<E>* front = head;
+  SNode<E>* front = head;
   head = head->next;
   delete front;
   front = nullptr;
@@ -107,12 +107,12 @@ E& SLinkedList<E>::get_front() {
 }
 
 template <typename E>
-Node<E>* SLinkedList<E>::get_ptr_at(int index) {
+SNode<E>* SLinkedList<E>::get_ptr_at(int index) {
   // Traverses the given pointer to the given index.
   if (index < 0 || index > num_of_nodes - 1)
     throw out_of_range("index out of range");
 
-  Node<E>* ptr = head;
+  SNode<E>* ptr = head;
   for (; index > 0; index--)
     ptr = ptr->next;
   return ptr;
@@ -129,8 +129,8 @@ void SLinkedList<E>::insert(const E &elem, int index) {
     return;
   }
 
-  Node<E>* new_node = new Node<E>;
-  Node<E>* predecessor = get_ptr_at(index - 1);  // Predecessor to new_node.
+  SNode<E>* new_node = new SNode<E>;
+  SNode<E>* predecessor = get_ptr_at(index - 1);  // Predecessor to new_node.
   // Predecessor to traverse to the index - 1. This is done so that new_node
   // can be inserted at the specified index value.
 
@@ -153,11 +153,11 @@ void SLinkedList<E>::remove(int index) {
     return;
   }
 
-  Node<E>* predecessor = get_ptr_at(index - 1);
+  SNode<E>* predecessor = get_ptr_at(index - 1);
   // Traverse predecessor to node that comes before the one that needs to
   // be deleted.
 
-  Node<E>* to_remove = predecessor->next;
+  SNode<E>* to_remove = predecessor->next;
   predecessor->next = to_remove->next;
   delete to_remove;
   to_remove = nullptr;
@@ -172,7 +172,7 @@ E& SLinkedList<E>::retrieve(int index) {
   if (index < 0 || index > num_of_nodes)
     throw out_of_range("index out of range");
 
-  Node<E>* current = get_ptr_at(index);
+  SNode<E>* current = get_ptr_at(index);
   return current->data;
 }
 
@@ -182,7 +182,7 @@ void SLinkedList<E>::print() {
   if (is_empty())
     throw length_error("list is empty");
 
-  Node<E>* current = head;
+  SNode<E>* current = head;
   while (current != nullptr) {
     cout << current->data << " ";
     current = current->next;
@@ -194,9 +194,9 @@ void SLinkedList<E>::reverse() {
   // Call to helper to reverse list
   if (is_empty())
     throw length_error("list is empty");
-  Node<E>* predecessor = nullptr;
-  Node<E>* current = head;
-  Node<E>* successor = current;
+  SNode<E>* predecessor = nullptr;
+  SNode<E>* current = head;
+  SNode<E>* successor = current;
 
   // Iterate through list and reverse the pointers of each node.
   while (current != nullptr) {

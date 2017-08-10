@@ -13,11 +13,11 @@ template <typename E>
 class Queue;  // Let Node class know DLL exists
 
 template <typename E>
-class Node {
+class QNode {
 private:
   E data;
-  Node<E>* next;
-  Node<E>* prev;
+  QNode<E>* next;
+  QNode<E>* prev;
   friend class Queue<E>;
 };
 
@@ -25,11 +25,11 @@ private:
 template <typename E>
 class Queue {
 private:
-  Node<E>* header;  // Pointer to the front of the list
-  Node<E>* trailer;  // Pointer to the end of the list
+  QNode<E>* header;  // Pointer to the front of the list
+  QNode<E>* trailer;  // Pointer to the end of the list
   int num_of_nodes;
-  void insert_helper(Node<E>*, const E &);
-  void remove_helper(Node<E>* &);
+  void insert_helper(QNode<E>*, const E &);
+  void remove_helper(QNode<E>* &);
 
 public:
   Queue();
@@ -49,8 +49,8 @@ public:
 template <typename E>
 Queue<E>::Queue() {
   // Initialize sentinel nodes.
-  header = new Node<E>;
-  trailer = new Node<E>;
+  header = new QNode<E>;
+  trailer = new QNode<E>;
   header->next = trailer;
   trailer->prev = header;
   num_of_nodes = 0;
@@ -78,13 +78,13 @@ int Queue<E>::length() {
 }
 
 template <typename E>
-void Queue<E>::insert_helper(Node<E>* predecessor, const E &elem) {
+void Queue<E>::insert_helper(QNode<E>* predecessor, const E &elem) {
   // Allocates a new node and links it between its predecessor node (the one
   // passed in) and its successor node.
-  Node<E>* new_node = new Node<E>;
+  QNode<E>* new_node = new QNode<E>;
   new_node->data = elem;
 
-  Node<E>* successor = predecessor->next;
+  QNode<E>* successor = predecessor->next;
   predecessor->next = new_node;
   successor->prev = new_node;
   new_node->next = successor;
@@ -93,11 +93,11 @@ void Queue<E>::insert_helper(Node<E>* predecessor, const E &elem) {
 }
 
 template <typename E>
-void Queue<E>::remove_helper(Node<E>* &to_remove) {
+void Queue<E>::remove_helper(QNode<E>* &to_remove) {
   // Deletes the node that to_remove points to and links the nodes that are
   // its predecessor and successor nodes.
-  Node<E>* predecessor = to_remove->prev;
-  Node<E>* successor = to_remove->next;
+  QNode<E>* predecessor = to_remove->prev;
+  QNode<E>* successor = to_remove->next;
   predecessor->next = successor;
   successor->prev = predecessor;
   delete to_remove;
@@ -110,7 +110,7 @@ void Queue<E>::dequeue() {
   // Call to remove_helper to remove element after header.
   if (is_empty())
     throw length_error("list is empty");
-  Node<E>* to_remove = header->next;
+  QNode<E>* to_remove = header->next;
   remove_helper(to_remove);
 }
 
@@ -142,7 +142,7 @@ void Queue<E>::print() {
   if (is_empty())
     throw length_error("list is empty");
 
-  Node<E>* current = header->next;
+  QNode<E>* current = header->next;
   while (current != trailer) {
     cout << current->data << " ";
     current = current->next;
