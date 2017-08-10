@@ -137,32 +137,24 @@ vector<E> Graph<E>::find_path(const int start, const int end) {
     current = queue.get_front();
     queue.dequeue();
 
+    if (current == end) break; // If we find the end, exit BFS.
+
     for (int i = 0; i < adjacency_list[current].neighbors.length(); i++) {
       // For each neighbor of current...
       neighbor = adjacency_list[current].neighbors[i]->index;
-      if (neighbor == end) {
-        // Check if the neighbor is the end. In this case assign its parent and
-        // exit BFS.
-        adjacency_list[neighbor].parent = &adjacency_list[current];
-        break;
-      }
+
       if (!adjacency_list[neighbor].visited) {
-        // else, check if the neighbor has been visited. If it hasnt, visit it,
-        // set its parent, and enqueue it so that its neighbors can eventually
-        // be checked.
+        // If neighbor hasnt been visited, visit it, set its parent, and enqueue
+        // it so that its neighbors can eventually checked
         adjacency_list[neighbor].visited = true;
         adjacency_list[neighbor].parent = &adjacency_list[current];
         queue.enqueue(neighbor);
       }
     }
-    if (neighbor == end) break; // Executes if we find the end as a neighbor.
   }
 
-  if (queue.is_empty())
-    throw invalid_argument("end cannot be reached");
-
   vector<E> path;
-  Vertex<E>* temp = &adjacency_list[neighbor];
+  Vertex<E>* temp = &adjacency_list[current];
 
   while (temp != nullptr) {
     // Trace back to the start. Save the path as we navigate back. Should use
