@@ -36,10 +36,54 @@ void test_graph() {
 	  route_file.close();
   }
 
-  vector<string> test = graph.adjacent_verticies(0);
-  for (vector<string>::iterator i = test.begin(); i != test.end(); i++)
-    cout << *i << endl;
+  try {
+    {
+      vector<string> adj = graph.adjacent_verticies(313);
+      cout << "Stations adjacent to Whitechapel:\n";
+      for (vector<string>::iterator i = adj.begin(); i != adj.end(); i++)
+        if (i == adj.end() - 1)
+          cout << *i;
+        else
+          cout << *i << ", ";
 
+      cout << endl << endl;
+
+      vector<string> path = graph.find_path(313, 55);
+      cout << "Path from Whitechapel to Charing_Cross:\n";
+      for (vector<string>::iterator i = path.begin(); i != path.end(); i++)
+        if (i == path.end() - 1)
+          cout << *i;
+        else
+          cout << *i << " --> ";
+
+      cout.flush();
+    }
+    cout << endl << endl;
+    {
+      vector<string> adj = graph.adjacent_verticies(15);
+      cout << "Stations adjacent to Barbican:\n";
+      for (vector<string>::iterator i = adj.begin(); i != adj.end(); i++)
+        if (i == adj.end() - 1)
+          cout << *i;
+        else
+          cout << *i << ", ";
+
+      cout << endl << endl;
+
+      vector<string> path = graph.find_path(15, 137);
+      cout << "Path from Barbican to Holborn:\n";
+      for (vector<string>::iterator i = path.begin(); i != path.end(); i++)
+        if (i == path.end() - 1)
+          cout << *i;
+        else
+          cout << *i << " --> ";
+
+      cout.flush();
+    }
+  }
+  catch (exception &e) {
+    cout << e.what() << endl;
+  }
 }
 
 int main() {
