@@ -77,7 +77,7 @@ void Graph<E>::add_vertex(const E vertex_val, const int vertex_index) {
 template <typename E>
 void Graph<E>::add_edge(const int vertex1_index, const int vertex2_index) {
   // Link the verticies that are located at the corresponding indices. Linking
-  // is done by adding each vertex to eachother's neighbor linked list. This
+  // is done by adding each vertex to eachother's neighbors linked list. This
   // is an undirected graph that is not weighted.
   if (vertex1_index < 0 || vertex1_index >= capacity ||
       vertex2_index < 0 || vertex2_index >= capacity)
