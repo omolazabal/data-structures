@@ -4,7 +4,7 @@ The data strucutres:
 - [x] Extendable Vector
 - [x] Singly Linked list
 - [x] Doubly linked list
-- [ ] Stack
+- [x] Stack
 - [x] Queue
 - [x] Binary Search Tree
 - [x] Graph
