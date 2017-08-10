@@ -5,6 +5,6 @@ The data strucutres:
 - [x] Singly Linked list
 - [x] Doubly linked list
 - [ ] Stack
-- [ ] Queue
+- [x] Queue
 - [x] Binary Search Tree
-- [ ] Graph
+- [x] Graph
