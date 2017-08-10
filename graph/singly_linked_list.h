@@ -17,7 +17,7 @@ template <typename E>
 class SNode {
 private:
   E data;
-  SNode<E>* next;
+  SNode<E>* next = nullptr;
   friend class SLinkedList<E>;
 };
 

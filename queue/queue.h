@@ -16,8 +16,8 @@ template <typename E>
 class QNode {
 private:
   E data;
-  QNode<E>* next;
-  QNode<E>* prev;
+  QNode<E>* next = nullptr;
+  QNode<E>* prev = nullptr;
   friend class Queue<E>;
 };
 

@@ -16,8 +16,8 @@ template <typename E>
 class DNode {
 private:
   E data;
-  DNode<E>* next;
-  DNode<E>* prev;
+  DNode<E>* next = nullptr;
+  DNode<E>* prev = nullptr;
   friend class DLinkedList<E>;
 };
 

@@ -16,8 +16,8 @@ class BinarySearchTree;  // Let node class know BST exists.
 template <typename E>
 class BNode {
   E data;
-  BNode<E>* left_child;
-  BNode<E>* right_child;
+  BNode<E>* left_child = nullptr;
+  BNode<E>* right_child = nullptr;
   friend class BinarySearchTree<E>;
 };
 
