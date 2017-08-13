@@ -1,109 +1,71 @@
 
 #include <iostream>
 #include "binary_search_tree.h"
+#include <string>
 
 using namespace std;
 
-void test_BST() {
-  BinarySearchTree<int> tree;
-  int numbers[] = {7, 6, 2, 5, 1, 3, 4, 11, 8, 9, 10, 13, 12, 14};
-
-  cout << "Inserting 7 6 2 5 1 3 4 11 8 9 10 13 12 14 into tree...\n";
-  for (int i = 0; i < 14; i++)
-    tree.insert(numbers[i]);
-
-  cout << "Size: " << tree.size();
-  cout << "\nPreorder: ";
-  tree.print(preorder);
-  cout << "\nInorder: ";
-  tree.print(inorder);
-  cout << "\nPostorder: ";
-  tree.print(postorder);
-
-  cout << endl << endl;
-
-  cout << "Inserting repeated value 5...\n";
-  try {
-      tree.insert(5);
-  }
-  catch(exception &e) {
-    cerr << e.what();
-  }
-  cout << "\nInorder: ";
-  tree.print(inorder);
-
-  cout << endl << endl;
-
-  cout << "Removing 4...\n";
-  tree.remove(4);
-  cout << "Size: " << tree.size();
-  cout << "\nPreorder: ";
-  tree.print(preorder);
-  cout << "\nInorder: ";
-  tree.print(inorder);
-  cout << "\nPostorder: ";
-  tree.print(postorder);
-
-  cout << endl << endl;
-
-  cout << "Removing 8...\n";
-  tree.remove(8);
-  cout << "Size: " << tree.size();
-  cout << "\nPreorder: ";
-  tree.print(preorder);
-  cout << "\nInorder: ";
-  tree.print(inorder);
-  cout << "\nPostorder: ";
-  tree.print(postorder);
-
-  cout << endl << endl;
-
-  cout << "Removing 11...\n";
-  tree.remove(11);
-  cout << "Size: " << tree.size();
-  cout << "\nPreorder: ";
-  tree.print(preorder);
-  cout << "\nInorder: ";
-  tree.print(inorder);
-  cout << "\nPostorder: ";
-  tree.print(postorder);
-
-  cout << endl << endl;
-
-  cout << "Removing 7...\n";
-  tree.remove(7);
-  cout << "Size: " << tree.size();
-  cout << "\nPreorder: ";
-  tree.print(preorder);
-  cout << "\nInorder: ";
-  tree.print(inorder);
-  cout << "\nPostorder: ";
-  tree.print(postorder);
-
-  cout << endl << endl;
-
-  cout << "Retrieving 5: " << tree.retrieve(5) << endl;
-  cout << "Retreiving 9: " << tree.retrieve(9) << endl;
-
-  cout << endl;
-
-  cout << "Emptying tree...";
-  tree.remove_all();
-  cout << "\nInorder: ";
-
-  try {
-      tree.print(inorder);
-  }
-  catch (exception &e) {
-      cerr << e.what();
-  }
-  cout << "\nSize: " << tree.size();
-
-  cout << endl << endl;
-
-}
-
 int main() {
-  test_BST();
+  BinarySearchTree<int> tree;
+  string order;
+  int input;
+  int value;
+
+  while (true) {
+    cout << "\n\nBINARY SEARCH TREE\n";
+    cout << "1. Insert\n";
+    cout << "2. Remove\n";
+    cout << "3. Retrieve\n";
+    cout << "4. Print\n";
+    cout << "5. Height\n";
+    cout << "6. Size\n";
+    cout << "7. Remove all\n\n";
+
+    cout << "Selection: ";
+    cin >> input;
+    cout << endl;
+
+    switch(input) {
+      case 1:
+        cout << "Enter a value: ";
+        cin >> value;
+        try { tree.insert(value); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 2:
+        cout << "Enter a value: ";
+        cin >> value;
+        try { tree.remove(value); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 3:
+        cout << "Enter a value to retrieve: ";
+        cin >> value;
+        try { cout << tree.retrieve(value); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 4:
+        cout << "Enter an order (preorder, inorder, postorder): ";
+        cin >> order;
+        try {
+          cout << endl;
+          tree.print(order);
+        }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 5:
+        try { cout << tree.height(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 6:
+        try { cout << tree.size(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 7:
+        try { tree.remove_all(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+    }
+  }
   return EXIT_SUCCESS;
 }

@@ -4,44 +4,53 @@
 
 using namespace std;
 
-void test_list() {
-  Queue<int> queue;
-  cout << "Enqueuing 2 4 5 6...\n";
-  queue.enqueue(2);
-  queue.enqueue(4);
-  queue.enqueue(5);
-  queue.enqueue(6);
-
-  cout << "queue: ";
-  queue.print();
-
-  cout << endl;
-
-  cout << "Length: " << queue.length();
-
-  cout << endl << endl;
-
-  cout << "Dequeuing 2 elements...\n";
-  queue.dequeue();
-  queue.dequeue();
-
-  cout << "queue: ";
-  queue.print();
-
-  cout << endl;
-
-  cout << "Length: " << queue.length();
-
-  cout << endl << endl;
-
-  cout << "Front element: " << queue.get_front() << endl;
-
-  cout << "Back element: " << queue.get_back() << endl;
-
-  cout << endl;
-}
 
 int main() {
-  test_list();
+  Queue<int> queue;
+  int input;
+  int value;
+
+  while (true) {
+    cout << "\n\nQueue\n";
+    cout << "1. Enqueue\n";
+    cout << "2. Dequeue\n";
+    cout << "3. Get front\n";
+    cout << "4. Get back\n";
+    cout << "5. Print\n";
+    cout << "6. Length\n\n";
+
+    cout << "Selection: ";
+    cin >> input;
+    cout << endl;
+
+    switch(input) {
+      case 1:
+        cout << "Enter a value: ";
+        cin >> value;
+        try { queue.enqueue(value); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 2:
+        try { queue.dequeue(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 3:
+        try { cout << queue.get_front(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 4:
+        try { cout << queue.get_back(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 5:
+        try { queue.print(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+      case 6:
+        try { cout << queue.length(); }
+        catch (exception &e) { cerr << e.what(); }
+        break;
+    }
+  }
   return EXIT_SUCCESS;
 }
