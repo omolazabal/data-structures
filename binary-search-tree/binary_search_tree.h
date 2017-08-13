@@ -3,12 +3,13 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <string>
 
+using std::string;
 using std::cout;
 using std::invalid_argument;
 using std::length_error;
-
-enum traversal_order {preorder, inorder, postorder};
+using std::max;
 
 template <typename E>
 class BinarySearchTree;  // Let node class know BST exists.
@@ -29,11 +30,12 @@ private:
   int num_of_nodes;
 
   // Helper functions to perform recursion.
+  int height_helper(BNode<E>*);
   void insert_helper(BNode<E>* &, const E &);
   void remove_node(BNode<E>* &);
   void remove_helper(BNode<E>* &, const E &);
   E& retrieve_helper(BNode<E>* &, const E &);
-  void print_helper(BNode<E>*, traversal_order);
+  void print_helper(BNode<E>*, string order);
   void remove_all_helper(BNode<E>* &);
 
   bool is_leaf_node(BNode<E>*);  // Check if node it a leaf node
@@ -47,12 +49,13 @@ public:
 
   bool is_empty();
   int size();
+  int height();
 
   void insert(const E &);
   void remove(const E &);
   E& retrieve(const E &);
 
-  void print(traversal_order);
+  void print(string order);
   void remove_all();
 };
 
@@ -77,6 +80,21 @@ template <typename E>
 int BinarySearchTree<E>::size() {
   // Returns the number of nodes in the tree.
   return num_of_nodes;
+}
+
+template <typename E>
+int BinarySearchTree<E>::height_helper(BNode<E>* ptr) {
+  if (ptr == nullptr)
+    return 0;
+
+  int left_height = height_helper(ptr->left_child);
+  int right_height = height_helper(ptr->right_child);
+  return max(left_height, right_height) + 1;
+}
+
+template <typename E>
+int BinarySearchTree<E>::height() {
+  return height_helper(root);
 }
 
 template <typename E>
@@ -230,34 +248,36 @@ E& BinarySearchTree<E>::retrieve(const E &elem) {
 }
 
 template <typename E>
-void BinarySearchTree<E>::print_helper(BNode<E>* ptr, traversal_order order) {
+void BinarySearchTree<E>::print_helper(BNode<E>* ptr, string order) {
   // Performs preorder, inorder, and postorder traversal.
   if (ptr != nullptr) {
     // Pop off the recursive stack if reached nullptr.
 
-    if (order == preorder) {
+    if (order == "preorder") {
       cout << ptr->data << " ";
-      print_helper(ptr->left_child, preorder);
-      print_helper(ptr->right_child, preorder);
+      print_helper(ptr->left_child, "preorder");
+      print_helper(ptr->right_child, "preorder");
     }
-    else if (order == inorder) {
-      print_helper(ptr->left_child, inorder);
+    else if (order == "inorder") {
+      print_helper(ptr->left_child, "inorder");
       cout << ptr->data << " ";
-      print_helper(ptr->right_child, inorder);
+      print_helper(ptr->right_child, "inorder");
     }
-    else if (order == postorder) {
-      print_helper(ptr->left_child, postorder);
-      print_helper(ptr->right_child, postorder);
+    else if (order == "postorder") {
+      print_helper(ptr->left_child, "postorder");
+      print_helper(ptr->right_child, "postorder");
       cout << ptr->data << " ";
     }
   }
 }
 
 template <typename E>
-void BinarySearchTree<E>::print(traversal_order order) {
+void BinarySearchTree<E>::print(string order) {
   // Print values in the tree in the given order (preorder, inorder, or postorder).
   if (is_empty())
     throw length_error("tree is empty, nothing to print");
+  if (order != "preorder" || order != "inorder" || order != "postorder")
+    throw invalid_argument("only preorder, inorder, postorder are available");
 
   print_helper(root, order);
   cout.flush();  // Flush output buffer to avoid data from not appearing on console.
