@@ -35,7 +35,7 @@ private:
 public:
   Graph(const int CAPACITY = 100);
   ~Graph();
-  void add_vertex(const E, const int);
+  void add_vertex(const E &, const int);
   void add_edge(const int, const int);
   vector<E> adjacent_verticies(const int);
   vector<E> find_path(const int, const int);
@@ -61,7 +61,7 @@ Graph<E>::~Graph() {
 }
 
 template <typename E>
-void Graph<E>::add_vertex(const E vertex_val, const int vertex_index) {
+void Graph<E>::add_vertex(const E &vertex_val, const int vertex_index) {
   // Adds verticies to the adj list. Verticies store a value and an index.
   // The index corresponds with their position in the adj list.
   if (vertex_index < 0 || vertex_index >= capacity)
