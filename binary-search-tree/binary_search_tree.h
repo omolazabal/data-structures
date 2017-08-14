@@ -84,6 +84,8 @@ int BinarySearchTree<E>::size() {
 
 template <typename E>
 int BinarySearchTree<E>::height_helper(BNode<E>* ptr) {
+  // Finds the height of the tree by recursively traversing down each subtree
+  // (postorder) and adding +1 to the heights as it traverses back up.
   if (ptr == nullptr)
     return 0;
 
@@ -94,6 +96,7 @@ int BinarySearchTree<E>::height_helper(BNode<E>* ptr) {
 
 template <typename E>
 int BinarySearchTree<E>::height() {
+  // Check height of tree (how many nodes, not edges). Call to height helper.
   return height_helper(root);
 }
 
