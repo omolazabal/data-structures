@@ -1,13 +1,11 @@
 
 #include <iostream>
 #include "binary_search_tree.h"
-#include <string>
 
 using namespace std;
 
 int main() {
   BinarySearchTree<int> tree;
-  string order;
   int input;
   int value;
 
@@ -25,7 +23,7 @@ int main() {
     cin >> input;
     cout << endl;
 
-    switch(input) {
+    switch(input){
       case 1:
         cout << "Enter a value: ";
         cin >> value;
@@ -45,11 +43,21 @@ int main() {
         catch (exception &e) { cerr << e.what(); }
         break;
       case 4:
-        cout << "Enter an order (preorder, inorder, postorder): ";
-        cin >> order;
+        cout << "Select a number: (1)preorder, (2)inorder, (3)postorder: ";
+        cin >> value;
         try {
           cout << endl;
-          tree.print(order);
+          switch(value) {
+            case 1:
+              tree.print(preorder);
+              break;
+            case 2:
+              tree.print(inorder);
+              break;
+            case 3:
+              tree.print(postorder);
+              break;
+          }
         }
         catch (exception &e) { cerr << e.what(); }
         break;
