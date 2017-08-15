@@ -3,13 +3,13 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <string>
 
-using std::string;
 using std::cout;
 using std::invalid_argument;
 using std::length_error;
 using std::max;
+
+enum traversal_order {preorder, inorder, postorder};
 
 template <typename E>
 class BinarySearchTree;  // Let node class know BST exists.
@@ -17,8 +17,8 @@ class BinarySearchTree;  // Let node class know BST exists.
 template <typename E>
 class BNode {
   E data;
-  BNode<E>* left_child = nullptr;
-  BNode<E>* right_child = nullptr;
+  BNode<E>* left = nullptr;
+  BNode<E>* right = nullptr;
   friend class BinarySearchTree<E>;
 };
 
@@ -35,7 +35,7 @@ private:
   void remove_node(BNode<E>* &);
   void remove_helper(BNode<E>* &, const E &);
   E& retrieve_helper(BNode<E>* &, const E &);
-  void print_helper(BNode<E>*, string order);
+  void print_helper(BNode<E>*, traversal_order);
   void remove_all_helper(BNode<E>* &);
 
   bool is_leaf_node(BNode<E>*);  // Check if node it a leaf node
@@ -55,7 +55,7 @@ public:
   void remove(const E &);
   E& retrieve(const E &);
 
-  void print(string order);
+  void print(traversal_order);
   void remove_all();
 };
 
@@ -89,8 +89,8 @@ int BinarySearchTree<E>::height_helper(BNode<E>* ptr) {
   if (ptr == nullptr)
     return 0;
 
-  int left_height = height_helper(ptr->left_child);
-  int right_height = height_helper(ptr->right_child);
+  int left_height = height_helper(ptr->left);
+  int right_height = height_helper(ptr->right);
   return max(left_height, right_height) + 1;
 }
 
@@ -115,9 +115,9 @@ void BinarySearchTree<E>::insert_helper(BNode<E>* &ptr, const E &elem) {
 
   // Traverse
   if (elem < ptr->data)
-    insert_helper(ptr->left_child, elem);
+    insert_helper(ptr->left, elem);
   else if (elem > ptr->data)
-    insert_helper(ptr->right_child, elem);
+    insert_helper(ptr->right, elem);
   else if (elem == ptr->data)
     throw invalid_argument("value is already in tree");
 }
@@ -125,7 +125,7 @@ void BinarySearchTree<E>::insert_helper(BNode<E>* &ptr, const E &elem) {
 template <typename E>
 bool BinarySearchTree<E>::is_leaf_node(BNode<E>* ptr) {
   // Check it passed in pointer points to a leaf node.
-  if (ptr->left_child == nullptr && ptr->right_child == nullptr)
+  if (ptr->left == nullptr && ptr->right == nullptr)
     return true;
   return false;
 }
@@ -133,9 +133,9 @@ bool BinarySearchTree<E>::is_leaf_node(BNode<E>* ptr) {
 template <typename E>
 bool BinarySearchTree<E>::only_one_child(BNode<E>* ptr) {
   // Check if passed in pointer points to a node with only one child.
-  if (ptr->left_child == nullptr && ptr->right_child != nullptr)
+  if (ptr->left == nullptr && ptr->right != nullptr)
     return true;
-  if (ptr->right_child == nullptr && ptr->left_child != nullptr)
+  if (ptr->right == nullptr && ptr->left != nullptr)
     return true;
   return false;
 }
@@ -146,10 +146,10 @@ BNode<E>* BinarySearchTree<E>::get_min_ptr(BNode<E>* ptr) {
   if (ptr == nullptr)
     throw invalid_argument("ptr has null value, cannot find minimum value");
 
-  if (ptr->left_child == nullptr)
+  if (ptr->left == nullptr)
     return ptr;
 
-  return get_min_ptr(ptr->left_child);
+  return get_min_ptr(ptr->left);
 }
 
 template <typename E>
@@ -169,18 +169,18 @@ void BinarySearchTree<E>::remove_node(BNode<E>* &ptr) {
     // child or left child) set the pointer to point to the child node and
     // delete the node that the pointer previously pointed to.
 
-    if (ptr->left_child == nullptr) {
+    if (ptr->left == nullptr) {
       // Change ptr to point to its right child and delete the node that it
       // previously pointed to.
       BNode<E>* to_remove = ptr;
-      ptr = ptr->right_child;
+      ptr = ptr->right;
       delete to_remove;
       to_remove = nullptr;
     }
-    else if (ptr->right_child == nullptr) {
+    else if (ptr->right == nullptr) {
       // Preform the same as above but with opposite child.
       BNode<E>* to_remove = ptr;
-      ptr = ptr->left_child;
+      ptr = ptr->left;
       delete to_remove;
       to_remove = nullptr;
     }
@@ -188,12 +188,12 @@ void BinarySearchTree<E>::remove_node(BNode<E>* &ptr) {
 
   // Case in which there are two children.
   else {
-    // Find the minimum value of the subtree with ptr->right_child as root, then
+    // Find the minimum value of the subtree with ptr->right as root, then
     // replace ptr's data with the minimum value. Finally, delete the node that
     // originally had the minimum value.
-    BNode<E>* min = get_min_ptr(ptr->right_child);
+    BNode<E>* min = get_min_ptr(ptr->right);
     ptr->data = min->data;
-    remove_helper(ptr->right_child, min->data);
+    remove_helper(ptr->right, min->data);
   }
 }
 
@@ -206,9 +206,9 @@ void BinarySearchTree<E>::remove_helper(BNode<E>* &ptr, const E &elem) {
   if (ptr->data == elem)
     remove_node(ptr);
   else if (elem < ptr->data)
-    remove_helper(ptr->left_child, elem);
+    remove_helper(ptr->left, elem);
   else if (elem > ptr->data)
-    remove_helper(ptr->right_child, elem);
+    remove_helper(ptr->right, elem);
 }
 
 template <typename E>
@@ -237,9 +237,9 @@ E& BinarySearchTree<E>::retrieve_helper(BNode<E>* &ptr, const E &elem) {
   if (ptr->data == elem)
     return ptr->data;
   else if (elem < ptr->data)
-    return retrieve_helper(ptr->left_child, elem);
+    return retrieve_helper(ptr->left, elem);
   else if (elem > ptr->data)
-    return retrieve_helper(ptr->right_child, elem);
+    return retrieve_helper(ptr->right, elem);
 }
 
 template <typename E>
@@ -251,36 +251,34 @@ E& BinarySearchTree<E>::retrieve(const E &elem) {
 }
 
 template <typename E>
-void BinarySearchTree<E>::print_helper(BNode<E>* ptr, string order) {
+void BinarySearchTree<E>::print_helper(BNode<E>* ptr, traversal_order order) {
   // Performs preorder, inorder, and postorder traversal.
   if (ptr != nullptr) {
     // Pop off the recursive stack if reached nullptr.
 
-    if (order == "preorder") {
+    if (order == preorder) {
       cout << ptr->data << " ";
-      print_helper(ptr->left_child, "preorder");
-      print_helper(ptr->right_child, "preorder");
+      print_helper(ptr->left, preorder);
+      print_helper(ptr->right, preorder);
     }
-    else if (order == "inorder") {
-      print_helper(ptr->left_child, "inorder");
+    else if (order == inorder) {
+      print_helper(ptr->left, inorder);
       cout << ptr->data << " ";
-      print_helper(ptr->right_child, "inorder");
+      print_helper(ptr->right, inorder);
     }
-    else if (order == "postorder") {
-      print_helper(ptr->left_child, "postorder");
-      print_helper(ptr->right_child, "postorder");
+    else if (order == postorder) {
+      print_helper(ptr->left, postorder);
+      print_helper(ptr->right, postorder);
       cout << ptr->data << " ";
     }
   }
 }
 
 template <typename E>
-void BinarySearchTree<E>::print(string order) {
+void BinarySearchTree<E>::print(traversal_order order) {
   // Print values in the tree in the given order (preorder, inorder, or postorder).
   if (is_empty())
     throw length_error("tree is empty, nothing to print");
-  if (order != "preorder" || order != "inorder" || order != "postorder")
-    throw invalid_argument("only preorder, inorder, postorder are available");
 
   print_helper(root, order);
   cout.flush();  // Flush output buffer to avoid data from not appearing on console.
@@ -291,8 +289,8 @@ void BinarySearchTree<E>::remove_all_helper(BNode<E>* &ptr) {
   // Traverses the tree in postorder order and removes the nodes one at a time.
   if (ptr != nullptr) {
     // Pop of the recursive stack if reached nullptr.
-    remove_all_helper(ptr->left_child);
-    remove_all_helper(ptr->right_child);
+    remove_all_helper(ptr->left);
+    remove_all_helper(ptr->right);
     delete ptr;
     ptr = nullptr;
   }
