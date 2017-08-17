@@ -31,13 +31,13 @@ private:
   ANode<E>* root;
   int num_of_nodes;
 
-  // Trinode restructuring
+  // Trinode restructuring & balancing
   bool is_balanced(ANode<E>* &);  // Check if subtree is balanced
   void rebalance(ANode<E>* &);
   ANode<E>* tallest_grandchild(ANode<E>* &ptr);  // Find the tallest grandchild of node
   ANode<E>* restructure(ANode<E>* &);
 
-  // Helper functions to perform recursion.
+  // Helper functions
   int height_helper(ANode<E>*);
   ANode<E>* insert_helper(ANode<E>* &, const E &);
   ANode<E>* remove_node(ANode<E>* &);
@@ -46,6 +46,7 @@ private:
   void print_helper(ANode<E>*, traversal_order);
   void remove_all_helper(ANode<E>* &);
 
+  // Utility functions
   void expand_external(ANode<E>*);  // add external nodes
   bool is_external(ANode<E>*);
   void set_height(ANode<E>*);  // Set height of node.
@@ -69,6 +70,7 @@ public:
   void print(traversal_order);
   void remove_all();
 };
+
 
 template <typename E>
 AVLTree<E>::AVLTree() {
@@ -124,7 +126,8 @@ bool AVLTree<E>::only_one_child(ANode<E>* ptr) {
 
 template <typename E>
 ANode<E>* AVLTree<E>::get_min_ptr(ANode<E>* ptr) {
-  // Traverse the passed in pointer to the minimum value of the tree/subtree.
+  // Traverse the passed in pointer to the minimum value of the tree/subtree
+  // aka the left-most node.
   if (ptr == nullptr || is_external(ptr))
     throw invalid_argument("cannot find minimum value; is null or external");
 
@@ -150,13 +153,15 @@ void AVLTree<E>::set_height(ANode<E>* ptr) {
 template <typename E>
 int AVLTree<E>::height() {
   // Check height of tree (how many nodes, not edges).
+  if (is_empty())
+    throw length_error("tree is empty");
   return root->height;
 }
 
 template <typename E>
 bool AVLTree<E>::is_balanced(ANode<E>* &ptr) {
   // Checks if the subtree is balanced by comparing the heights of its child
-  // nodes. If it finds that the hight difference is greater than 1, then it
+  // nodes. If it finds that the height difference is greater than 1, then it
   // returns false; true otherwise.
   int bal = ptr->left->height - ptr->right->height;
   return ((bal >= -1) && (bal <= 1));
@@ -186,70 +191,122 @@ ANode<E>* AVLTree<E>::tallest_grandchild(ANode<E>* &ptr) {
 
 template <typename E>
 ANode<E>* AVLTree<E>::restructure(ANode<E>* &x) {
-  // Rename nodes as abc so that a precedes b and b precedes c in an inorder
-  // traversal.
+  // This funciton performs the trinode restructure algorithm that Data Structures
+  // and algorithms in C++ 2e - Goodrich describes. The naming convention used for
+  // the pointers are the ones used in the book as well. I recommend reading
+  // Goodrich's trinode restructuring explaination to get a better understanding.
+
+  // Locate the three nodes we will be performing the trinode restructure on.
   ANode<E>* y = x->parent;
   ANode<E>* z = y->parent;
 
-  ANode<E>* a;
-  ANode<E>* b;
-  ANode<E>* c;
+  // We will be assigning a, b, c to their appropriate nodes, that is, we will
+  // be assigning them inorder respective to z, y, x (see ascii art below)
+  ANode<E>* a;  // First in inorder
+  ANode<E>* b;  // Second in inorder
+  ANode<E>* c;  // Third in inorder
 
-  ANode<E>* t0;
-  ANode<E>* t1;
-  ANode<E>* t2;
-  ANode<E>* t3;
+  // We will assigned t0, t1, t2, t3 to their respective nodes. Like a, b, c,
+  // we will be assigning them inorder respective to the four subtrees of z, y, x
+  ANode<E>* t0;  // First subtree in inorder
+  ANode<E>* t1;  // Second subtree in inorder
+  ANode<E>* t2;  // Third subtree in inorder
+  ANode<E>* t3;  // Fourth subtree in inorder
+
   /*
-  Check for the four cases:
+  In order to assign a, b, c, t0, t1, t2, t3 appropriately, we will need to
+  evaluate the positionings of z, y, x. There are four possible positions that
+  they can be positioned. I have made some ascii art of those positions, what
+  a, b, c will be assigned to if given those positions, and what the new subtree
+  will look like after the restructure (this is equivalent to the book's 10.10 fig):
+
+     \                                              \
+    a = z                                          b = y
+   /     \                    (a)                 /     \
+ t0     b = y           single rotation        a = z   c = x
+       /     \          -------------->       /    \   /    \
+     t1     c = x                           t0     t1 t2    t3
+           /     \
+         t2       t3
+
+
+               /                                    \
+            c = z                                  b = y
+           /     \            (b)                 /     \
+        b = y     t3    single rotation        a = x   c = z
+       /     \          -------------->       /    \   /    \
+    a = x     t2                            t0     t1 t2    t3
+   /     \
+ t0       t1
+
+
+         \                                          \
+       a = z                                       b = x
+      /     \                 (c)                 /     \
+    t0     c = y        double rotation        a = z   c = y
+          /     \       -------------->       /    \   /    \
+       b = x     t3                         t0     t1 t2    t3
+      /     \
+    t1       t2
+
+         /                                          \
+       c = z                                       b = x
+      /     \                 (c)                 /     \
+   a = y    t3          double rotation        a = y   c = z
+  /     \               -------------->       /    \   /    \
+ t0    b = x                                t0     t1 t2    t3
+      /     \
+    t1       t2
+
   */
   if (z->right == y && y->right == x) {
     // single rotation (a)
     a = z; b = y; c = x;
     t0 = a->left; t1 = b->left; t2 = c->left; t3 = c->right;
-    if (a->parent != nullptr)
-      a->parent->right = b;
-    b->parent = a->parent;
   }
   else if (z->left == y && y->left == x) {
     // single rotation (b)
     a = x; b = y; c = z;
     t0 = a->left; t1 = a->right; t2 = b->right; t3 = c->right;
-    if (c->parent != nullptr)
-      c->parent->left = b;
-    b->parent = c->parent;
   }
   else if (z->right == y && y->left == x) {
     // double rotation (c)
     a = z; b = x; c = y;
     t0 = a->left; t1 = b->left; t2 = b->right; t3 = c->right;
-    if (a->parent != nullptr)
-      a->parent->right - b;
-    b->parent = a;
   }
   else if (z->left == y && y->right == x) {
     // double rotation (d)
     a = y; b = x; c = z;
     t0 = a->left; t1 = b->left; t2 = b->right; t3 = c->right;
-    if (c->parent != nullptr)
-      c->parent->left = b;
-    b->parent = c;
   }
+
+  // Replace subtree rooted at z. For all cases, b will be the new root after
+  // the restructure.
+  if (z->parent != nullptr) {  // if z == root
+    if (z->parent->right == z)
+      z->parent->right = b;
+    else
+      z->parent->left = b;
+  }
+  b->parent = z->parent;
 
   if (root == z)
     root = b;
 
+  // "Let a be the child of b and let t0 and t1 be the left and right subtrees
+  // of a, respectively" (Goodrich 443). t0 is already left subtree.
   b->left = a;
   a->parent = b;
-
   a->right = t1;
   t1->parent = a;
-
+  // "Let c be the child of b and let t2 and t3 be the left and right subtrees
+  // of c, respectively" (Goodrich 443). t3 is already right subtree.
   b->right = c;
   c->parent = b;
   c->left = t2;
   t2->parent = c;
 
-  return b;
+  return b;  // return new root of subtree
 }
 
 template <typename E>
@@ -266,7 +323,7 @@ void AVLTree<E>::rebalance(ANode<E>* &ptr) {
 
     if (!is_balanced(z)) {
       // If unbalanced, find tallest grandchild, x, perform trinode restructure,
-      // and adjust the heights. We aquire the tallest grandcihld so that we can
+      // and adjust the heights. We aquire the tallest grandchild so that we can
       // easily access the 3 nodes that we will perform the restructure on (the
       // three nodes will be x, x's parent, and x's parent's parent)
       ANode<E>* x = tallest_grandchild(z);
@@ -283,15 +340,9 @@ ANode<E>* AVLTree<E>::insert_helper(ANode<E>* &ptr, const E &elem) {
   // Recursively traverse until you reach an external node. Once you've reached
   // an external node, save the data into the external node and then expand.
 
-  if (num_of_nodes == 0) {
-    // If tree is empty, create root node.;
-    ptr = new ANode<E>;
-    ptr->data = elem;
-    expand_external(ptr);
-    return ptr;
-  }
-
-  if (is_external(ptr)) {
+  if (is_empty() || is_external(ptr)) {
+    if (is_empty())  // If tree is empty, create root node.
+      ptr = new ANode<E>;
     // Add new node to tree.
     ptr->data = elem;
     expand_external(ptr);
@@ -309,7 +360,7 @@ ANode<E>* AVLTree<E>::insert_helper(ANode<E>* &ptr, const E &elem) {
 
 template <typename E>
 void AVLTree<E>::insert(const E &elem) {
-  // To remove an element. Call to insert helper. Then sets heights and rebalances
+  // To remove an element. Call to insert helper. Sets heights and rebalances
   // the tree if needed.
   ANode<E>* ptr = insert_helper(root, elem);
   num_of_nodes++;
@@ -325,29 +376,29 @@ ANode<E>* AVLTree<E>::remove_node(ANode<E>* &ptr) {
   // A pointer to where the node was removed.
 
   if (is_leaf_node(ptr)) {
-    // If leaf node, link one of its external nodes with the parent node, then
-    // delete the leaf node and the other external node that was not used. If
-    // it is root then delete everything.
+    // If leaf node, make ptr be one of the external nodes, then deleted the node
+    // that was ptr previously was, along with the other external node. If ptr is
+    // root, just delete everthing and set ptr to null.
 
     if (ptr == root) {
-      delete ptr->right;
-      delete ptr->left;
+      ANode<E>* left_extern = ptr->right;
+      ANode<E>* right_extern = ptr->left;
+      delete left_extern;
+      delete right_extern;
       delete ptr;
       ptr = nullptr;
       return ptr;
     }
-    ANode<E>* gparent = ptr->parent;
-    ANode<E>* sibling = ptr->left;
 
-    // Link grandparent and sibling
-    if (gparent->left == ptr)
-      gparent->left = sibling;
-    else gparent->right = sibling;
-    sibling->parent = gparent;
+    ANode<E>* to_remove = ptr;
+    ptr = ptr->right;  // Set ptr as an external node and link to its grandparent.
+    ptr->parent = to_remove->parent;
 
-    delete ptr->right;
-    delete ptr;
-    return sibling;
+    ANode<E>* extern_node = to_remove->left;
+    delete extern_node;
+    delete to_remove;
+    return ptr;
+
   }
 
   else if (only_one_child(ptr)) {
@@ -362,7 +413,8 @@ ANode<E>* AVLTree<E>::remove_node(ANode<E>* &ptr) {
       ptr = ptr->right;
       ptr->parent = to_remove->parent;
 
-      delete to_remove->left;  // delete external node
+      ANode<E>* extern_node = to_remove->left;
+      delete extern_node;  // delete external node
       delete to_remove;
       return ptr;
     }
@@ -372,7 +424,8 @@ ANode<E>* AVLTree<E>::remove_node(ANode<E>* &ptr) {
       ptr = ptr->left;
       ptr->parent = to_remove->parent;
 
-      delete to_remove->right;  // delete external node
+      ANode<E>* extern_node = to_remove->right;
+      delete extern_node;  // delete external node
       delete to_remove;
       return ptr;
     }
@@ -391,8 +444,8 @@ ANode<E>* AVLTree<E>::remove_node(ANode<E>* &ptr) {
 template <typename E>
 ANode<E>* AVLTree<E>::remove_helper(ANode<E>* &ptr, const E &elem) {
   // Traverses ptr to the node that needs to be deleted. Returns pointer that
-  // Returns pointer that points to where the deleted node use to be. Uses
-  // remove_node() to delete node.
+  // points to where the deleted node use to be. Uses remove_node() to delete
+  // the node.
   if (is_external(ptr))
     throw invalid_argument("value not in tree");
 
@@ -440,24 +493,24 @@ E& AVLTree<E>::retrieve(const E &elem) {
 template <typename E>
 void AVLTree<E>::print_helper(ANode<E>* ptr, traversal_order order) {
   // Performs preorder, inorder, and postorder traversal.
-  if (!is_external(ptr)) {
+  if (is_external(ptr))
+    return;
     // Pop off the recursive stack if reached external.
 
-    if (order == preorder) {
-      cout << ptr->data << " ";
-      print_helper(ptr->left, preorder);
-      print_helper(ptr->right, preorder);
-    }
-    else if (order == inorder) {
-      print_helper(ptr->left, inorder);
-      cout << ptr->data << " ";
-      print_helper(ptr->right, inorder);
-    }
-    else if (order == postorder) {
-      print_helper(ptr->left, postorder);
-      print_helper(ptr->right, postorder);
-      cout << ptr->data << " ";
-    }
+  if (order == preorder) {
+    cout << ptr->data << " ";
+    print_helper(ptr->left, preorder);
+    print_helper(ptr->right, preorder);
+  }
+  else if (order == inorder) {
+    print_helper(ptr->left, inorder);
+    cout << ptr->data << " ";
+    print_helper(ptr->right, inorder);
+  }
+  else if (order == postorder) {
+    print_helper(ptr->left, postorder);
+    print_helper(ptr->right, postorder);
+    cout << ptr->data << " ";
   }
 }
 
@@ -473,15 +526,15 @@ void AVLTree<E>::print(traversal_order order) {
 
 template <typename E>
 void AVLTree<E>::remove_all_helper(ANode<E>* &ptr) {
-  // Traverses the tree in postorder order and removes the nodes one at a time,
+  // Traverses the tree in postorder and removes the nodes one at a time,
   // including external nodes.
-  if (ptr != nullptr) {
+  if (ptr == nullptr)
+    return;
     // Pop of the recursive stack if reached nullptr.
-    remove_all_helper(ptr->left);
-    remove_all_helper(ptr->right);
-    delete ptr;
-    ptr = nullptr;
-  }
+  remove_all_helper(ptr->left);
+  remove_all_helper(ptr->right);
+  delete ptr;
+  ptr = nullptr;
 }
 
 template <typename E>
