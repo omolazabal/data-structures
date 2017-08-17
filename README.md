@@ -7,5 +7,5 @@ The data strucutres:
 - [x] Stack
 - [x] Queue
 - [x] Binary Search Tree
-- [ ] AVL Tree
+- [x] AVL Tree
 - [x] Graph
