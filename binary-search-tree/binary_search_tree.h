@@ -253,24 +253,24 @@ E& BinarySearchTree<E>::retrieve(const E &elem) {
 template <typename E>
 void BinarySearchTree<E>::print_helper(BNode<E>* ptr, traversal_order order) {
   // Performs preorder, inorder, and postorder traversal.
-  if (ptr != nullptr) {
+  if (ptr == nullptr)
+    return;
     // Pop off the recursive stack if reached nullptr.
 
-    if (order == preorder) {
-      cout << ptr->data << " ";
-      print_helper(ptr->left, preorder);
-      print_helper(ptr->right, preorder);
-    }
-    else if (order == inorder) {
-      print_helper(ptr->left, inorder);
-      cout << ptr->data << " ";
-      print_helper(ptr->right, inorder);
-    }
-    else if (order == postorder) {
-      print_helper(ptr->left, postorder);
-      print_helper(ptr->right, postorder);
-      cout << ptr->data << " ";
-    }
+  if (order == preorder) {
+    cout << ptr->data << " ";
+    print_helper(ptr->left, preorder);
+    print_helper(ptr->right, preorder);
+  }
+  else if (order == inorder) {
+    print_helper(ptr->left, inorder);
+    cout << ptr->data << " ";
+    print_helper(ptr->right, inorder);
+  }
+  else if (order == postorder) {
+    print_helper(ptr->left, postorder);
+    print_helper(ptr->right, postorder);
+    cout << ptr->data << " ";
   }
 }
 
@@ -287,13 +287,13 @@ void BinarySearchTree<E>::print(traversal_order order) {
 template <typename E>
 void BinarySearchTree<E>::remove_all_helper(BNode<E>* &ptr) {
   // Traverses the tree in postorder order and removes the nodes one at a time.
-  if (ptr != nullptr) {
+  if (ptr == nullptr)
+    return;
     // Pop of the recursive stack if reached nullptr.
-    remove_all_helper(ptr->left);
-    remove_all_helper(ptr->right);
-    delete ptr;
-    ptr = nullptr;
-  }
+  remove_all_helper(ptr->left);
+  remove_all_helper(ptr->right);
+  delete ptr;
+  ptr = nullptr;
 }
 
 template <typename E>
